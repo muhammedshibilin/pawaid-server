@@ -15,9 +15,9 @@ const AnimalReportSchema: Schema = new Schema({
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
   },
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // User who reported the animal
-  recruiterId: { type: Schema.Types.ObjectId, ref: 'Recruiter' }, // Assigned recruiter (optional)
-  doctorId: { type: Schema.Types.ObjectId, ref: 'Doctor' }, // Assigned doctor (optional)
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }, 
+  recruiterId: { type: Schema.Types.ObjectId, ref: 'Recruiter' },
+  doctorId: { type: Schema.Types.ObjectId, ref: 'Doctor' },
   expenses: { type: Number, default: 0 },
 });
 

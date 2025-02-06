@@ -17,7 +17,7 @@ export class DoctorController {
 
   async register(req: Request, res: Response): Promise<Response> {
     try {
-      const doctorData = { ...req.body, document: (req.file as UploadedFile).location };
+      const doctorData = { ...req.body, document: (req.file as UploadedFile).location, location: { latitude:req.body.latitude, longitude:req.body.longitude }, };
       console.log(doctorData, "doctor dataa is here");
   
       const result = await this.doctorService.register(doctorData);

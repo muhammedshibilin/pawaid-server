@@ -6,6 +6,7 @@ export interface IDoctor extends Document{
     phone:number;
     document:string;
     password?:string|null;
+    location:{latitude:string,longitude:string}
     is_block?:boolean;
     is_verified?:boolean;
     rescued?:number;

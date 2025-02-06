@@ -16,7 +16,7 @@ export class RecruiterController {
 
   async register(req: Request, res: Response): Promise<Response> {
     try {
-      const recruiterData = { ...req.body, document:(req.file as UploadedFile).location};
+      const recruiterData = { ...req.body, document:(req.file as UploadedFile).location,location:{latitude:req.body.latitude,longitude:req.body.longitude}};
       console.log(recruiterData, "recruiter dataa is here");
   
       const result = await this.recruiterService.register(recruiterData);

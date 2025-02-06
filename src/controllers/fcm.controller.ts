@@ -6,7 +6,7 @@ export default class FCMController {
   async registerToken(req: Request, res: Response) {
     try {
       const {token } = req.body;
-      console.log('req.body',req.body,req.user.id)
+      console.log('req.body',req.body,req.user.id,req.user.role)
       if (!req.user.id || !token) return res.status(400).json({ message: "Missing userId or token" });
 
       const fcmToken = await this.fcm.registerToken(req.user.id, token,req.user.role);

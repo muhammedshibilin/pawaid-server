@@ -27,6 +27,10 @@ const RecruiterSchema:Schema = new Schema<IRecruiter>({
         type:String,
         required:true
     },
+    location:{
+        latitude:{type:String,required:true},
+        longitude:{type:String,required:true}
+    },
     rescued:{
         type:Number,
         default:0
