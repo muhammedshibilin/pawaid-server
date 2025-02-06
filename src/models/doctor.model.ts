@@ -27,9 +27,17 @@ const DoctorSchema:Schema = new Schema<IDoctor>({
         type:String,
         required:true
     },
-    location:{
-        latitude:{type:String,required:true},
-        longitude:{type:String,required:true}
+    location: {
+        type: {
+            type: String,
+            enum: ["Point"],
+            default: "Point"
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+            index: "2dsphere"
+        }
     },
     rescued:{
         type:Number,

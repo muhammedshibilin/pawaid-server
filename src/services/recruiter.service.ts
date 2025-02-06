@@ -96,4 +96,22 @@ export class RecruiterService {
       return { status: 500, message: 'Internal server error, please try again later' };
     }
   }
+
+  async getNearbyRecruiters(latitude: number,longitude: number): Promise<string[]> {
+    let radius = 5;
+    let recruiters: IRecruiter[] = [];
+
+    while (recruiters.length === 0 && radius <= 50) {
+      recruiters = await this.findRecruitersByRadius(latitude, longitude, radius);
+      if (recruiters.length === 0) radius += 5; 
+    }
+
+    return recruiters.map((recruiter) => recruiter._id!.toString());
+  }
+  
+  async findRecruitersByRadius(latitude: number,longitude: number,radiusInKm: number): Promise<IRecruiter[]> {
+    return this.recruiterRepository.findRecruitersNearby(latitude, longitude, radiusInKm);
+}
+
+
 }

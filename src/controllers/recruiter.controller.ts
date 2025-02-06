@@ -16,13 +16,16 @@ export class RecruiterController {
 
   async register(req: Request, res: Response): Promise<Response> {
     try {
-      const recruiterData = { ...req.body, document:(req.file as UploadedFile).location,location:{latitude:req.body.latitude,longitude:req.body.longitude}};
+      const recruiterData = { ...req.body, document:(req.file as UploadedFile).location,location: {
+        type: "Point", 
+        coordinates: [parseFloat(req.body.longitude), parseFloat(req.body.latitude)] 
+      }}
       console.log(recruiterData, "recruiter dataa is here");
   
       const result = await this.recruiterService.register(recruiterData);
       const admins = await this.fcmService.findAdminsToken()
       console.log('tokens',admins)
-      await this.fcmService.sendPushNotification(admins,"registration alert","new doctor registered",'http://localhost:4040/profile')
+      await this.fcmService.sendPushNotification(admins,"registration alert","new recruiter registered",'http://localhost:4200/admin/profile')
       return res.status(result.status).json({ message: result.message, data: result.data });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });

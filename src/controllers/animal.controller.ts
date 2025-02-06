@@ -4,10 +4,16 @@ import { createResponse } from "../utilities/createResponse.utils";
 import { HttpStatus } from "../enums/http-status.enum";
 import { UploadedFile } from "../interfaces/types/upload-file.interface";
 import { FCMService } from "../services/fcm.service";
+import { RecruiterAlertService } from "../services/recruiter-alert.service";
+import { RecruiterService } from "../services/recruiter.service";
 
 class AnimalReportController {
 
-    constructor(private animalService:AnimalReportService,private fcmService:FCMService){}
+    constructor(private animalService:AnimalReportService,
+      private fcmService:FCMService,
+      private recruiterAlertService:RecruiterAlertService,
+      private recruiterService:RecruiterService
+    ){}
   async create(req: Request, res: Response) {
     try {
       const { title, location } = req.body;
@@ -23,8 +29,12 @@ class AnimalReportController {
         description:title,
         imageUrl,
         location: JSON.parse(location),
-        userId: req.userId, 
+        userId: req.user.id, 
       });
+
+      const recruiters = await this.recruiterService.getNearbyRecruiters(newReport.location.latitude, newReport.location.longitude)
+      console.log('neaarr by recruitrsss',recruiters)
+      await this.recruiterAlertService.notifyRecruiters(newReport._id!.toString(),recruiters);
 
       return res.status(201).json(createResponse(HttpStatus.OK,"reported successfully"));
     } catch (error) {

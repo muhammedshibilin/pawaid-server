@@ -17,13 +17,16 @@ export class DoctorController {
 
   async register(req: Request, res: Response): Promise<Response> {
     try {
-      const doctorData = { ...req.body, document: (req.file as UploadedFile).location, location: { latitude:req.body.latitude, longitude:req.body.longitude }, };
+      const doctorData = { ...req.body, document:(req.file as UploadedFile).location,location: {
+        type: "Point", 
+        coordinates: [parseFloat(req.body.longitude), parseFloat(req.body.latitude)] 
+      }}
       console.log(doctorData, "doctor dataa is here");
   
       const result = await this.doctorService.register(doctorData);
       const admins = await this.fcmService.findAdminsToken()
       console.log('tokens',admins)
-      await this.fcmService.sendPushNotification(admins,"registration alert","new doctor registered",'http://localhost:4040/profile')
+      await this.fcmService.sendPushNotification(admins,"registration alert","new doctor registered",'http://localhost:4200/admin/profile')
       return res.status(result.status).json(createResponse(result.status, result.message, result.data));
     } catch (error: any) {
       return res.status(500).json(createResponse(HttpStatus.INTERNAL_SERVER_ERROR, error.message));

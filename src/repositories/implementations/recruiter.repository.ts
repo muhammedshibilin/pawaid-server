@@ -16,6 +16,19 @@ export class RecruiterRepository implements IRecruiterRepository {
             { new: true }
         );
     }
+
+    async findRecruitersNearby(latitude: number, longitude: number, radius: number): Promise<IRecruiter[]> {
+        const radiusInRadians = radius / 6378.1; 
+        return await Recruiter.find({
+          location: {
+            $geoWithin: {
+                $centerSphere: [[longitude, latitude], radiusInRadians]
+            }
+          },
+          is_available: true,
+        });
+     }
      
+
    
 }
