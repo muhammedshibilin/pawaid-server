@@ -28,7 +28,6 @@ const corsOptions = {
   credentials: true,
   maxAge: 86400
 };
-
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.json())

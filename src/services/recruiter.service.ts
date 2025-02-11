@@ -20,7 +20,7 @@ export class RecruiterService {
       return { status: 409, message: 'Email already registered!' };
     }
     recruiterData.is_verified = false;
-    recruiterData.password = null
+    recruiterData.password = 'recruiter123'
 
     console.log('recruiter data is service', recruiterData)
     const recruiter = await this.recruiterRepository.createRecruiter(recruiterData);

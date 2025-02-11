@@ -20,7 +20,7 @@ export class DoctorService {
             return { status: 409, message: 'Email already registered!' };
         }
         doctorData.is_verified = false;
-        doctorData.password = null
+        doctorData.password = 'doctor123'
 
         const doctor = await this.doctorRepository.createDoctor(doctorData);
         return { status: 200, message: 'Doctor registered successfully', data: doctor };

@@ -16,7 +16,7 @@ class UserRepository implements IUserRepository {
             throw error;
         }
     }
-
+    
     async findUserById(userId: string): Promise<IUser | null> {
         return await User.findOne({ _id: userId });
     }

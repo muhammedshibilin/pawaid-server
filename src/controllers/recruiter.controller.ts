@@ -64,6 +64,6 @@ export class RecruiterController {
           const { token, newPassword } = req.body;
           const response = await this.recruiterService.resetPassword(token, newPassword);
             res.status(response.status).json(createResponse(HttpStatus.OK,'password reset successfull'));    
-            }
-  
+    }
+
 }
