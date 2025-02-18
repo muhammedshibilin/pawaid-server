@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import AnimalReportService from "../services/animal.service";
+import AnimalReportService from "../services/implementation/animal.service";
 import { createResponse } from "../utilities/createResponse.utils";
 import { HttpStatus } from "../enums/http-status.enum";
-import { UploadedFile } from "../interfaces/types/upload-file.interface";
-import { FCMService } from "../services/fcm.service";
-import { RecruiterAlertService } from "../services/recruiter-alert.service";
-import { RecruiterService } from "../services/recruiter.service";
+import { UploadedFile } from "../entities/upload-file.interface";
+import { FCMService } from "../services/implementation/fcm.service";
+import { RecruiterAlertService } from "../services/implementation/recruiter-alert.service";
+import { RecruiterService } from "../services/implementation/recruiter.service";
 import exifParser from 'exif-parser';
 import s3Client from "../config/s3.cofig";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
@@ -53,10 +53,6 @@ class AnimalReportController {
         const fileBuffer = await this.getObjectFromS3(process.env.S3_BUCKET_NAME!, fileKey);
         const parser = exifParser.create(fileBuffer);
         const exifData = parser.parse();
-    
-        console.log('EXIF Data:', exifData);
-        console.log('EXIF Tags:', exifData.tags);
-    
         function convertGPSCoordinates(degrees: number[], ref: string): number {
           const [deg, min, sec] = degrees;
           const decimal = deg + min / 60 + sec / 3600;
@@ -103,8 +99,10 @@ class AnimalReportController {
         });
     
         const recruiters = await this.recruiterService.getNearbyRecruiters(newReport.location.latitude, newReport.location.longitude);
+        console.log('recruiter to alert',recruiters)
         await this.recruiterAlertService.notifyRecruiters(newReport._id!.toString(), recruiters);
-    
+        const recruitersToAlert = await this.fcmService.findRecruitersToken(recruiters)
+        await this.fcmService.sendPushNotification(recruitersToAlert,"rescue alert","new doctor registered",'http://localhost:4200/profile')
         return res.status(201).json(createResponse(HttpStatus.OK, "reported successfully"));
       } catch (error) {
         console.error("Error creating animal report:", error);
@@ -132,13 +130,7 @@ class AnimalReportController {
     }
   }
 
-  async getAnimalReport(){
-    try {
-        
-    } catch (error) {
-        
-    }
-  }
+  
 
  
 }

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { IPayload } from '../interfaces/types/IPayload';
+import { IPayload } from '../entities/IPayload';
 import { HttpStatus } from '../enums/http-status.enum';
 import { createResponse } from '../utilities/createResponse.utils';
 

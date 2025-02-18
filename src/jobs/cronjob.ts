@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { FCMService } from "../services/fcm.service";
+import { FCMService } from "../services/implementation/fcm.service";
 import FCMRepository from "../repositories/implementations/fcm.repository";
 
 

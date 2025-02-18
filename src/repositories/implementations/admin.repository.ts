@@ -1,14 +1,13 @@
 import User from '../../models/user.model';
-import { IUser } from '../../interfaces/types/IUser';
-import { IAdminRepository } from '../../interfaces/repositories/IAdminRepository';
-import { IDoctor } from '../../interfaces/types/IDocotor.interface';
+import { IUser } from '../../entities/IUser';
+import { IAdminRepository } from '../interfaces/IAdminRepository';
+import { IDoctor } from '../../entities/IDocotor.interface';
 import Doctor from '../../models/doctor.model';
-import { IRecruiter } from '../../interfaces/types/IRecruiter.interface';
+import { IRecruiter } from '../../entities/IRecruiter.interface';
 import Recruiter from '../../models/recruiter.model';
 
 class AdminRepository implements IAdminRepository {
   
-
   async getUsers(): Promise<IUser[]> {
     try {
       return await User.find({ is_admin: false }, 'username email is_block createdAt');

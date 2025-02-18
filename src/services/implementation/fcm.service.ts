@@ -1,5 +1,5 @@
-import admin from "../config/firebase-admin.config";
-import { IFcmRepository } from "../interfaces/repositories/IFcmRepository";
+import admin from "../../config/firebase-admin.config";
+import { IFcmRepository } from "../../repositories/interfaces/IFcmRepository";
 
 export class FCMService { 
   constructor(private fcm:IFcmRepository){}
@@ -18,6 +18,11 @@ export class FCMService {
   async findAdminsToken(){
     const adminTokens = this.fcm.getAdminTokens()
     return adminTokens
+  }
+
+  async findRecruitersToken(id:string[]){
+    const tokens = this.fcm.getRecruitersTokensByIds(id)
+    return tokens
   }
 
 
@@ -43,7 +48,6 @@ export class FCMService {
   
       console.log('Successfully sent notifications:', response);
   
-      // Handle failures
       response.responses.forEach((resp, index) => {
         if (!resp.success) {
           console.error(`Error sending to ${fcmTokens[index]}:`, resp.error);
@@ -55,9 +59,6 @@ export class FCMService {
     }
   }
   
-  
 
-
- 
 }
 

@@ -1,11 +1,11 @@
-import { IRecruiterRepository } from "../interfaces/repositories/IRecruiterRepository";
+import { IRecruiterRepository } from "../../repositories/interfaces/IRecruiterRepository";
 import bcrypt from 'bcryptjs';
-import { IRecruiter } from "../interfaces/types/IRecruiter.interface";
-import { IBaseRepository } from "../interfaces/repositories/IBaseRepository";
+import { IRecruiter } from "../../entities/IRecruiter.interface";
+import { IBaseRepository } from "../../repositories/interfaces/IBaseRepository";
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { ServiceResponse } from "../interfaces/types/service-response.interface";
-import { generateJwtToken } from "../utilities/generateJwt";
+import { ServiceResponse } from "../../entities/service-response.interface";
+import { generateJwtToken } from "../../utilities/generateJwt";
 
 export class RecruiterService {
   constructor(private recruiterRepository: IRecruiterRepository, private baseRepository: IBaseRepository<IRecruiter>) { }
@@ -17,10 +17,10 @@ export class RecruiterService {
 
     const existingRecruiter = await this.baseRepository.findByEmail(recruiterData.email);
     if (existingRecruiter) {
-      return { status: 409, message: 'Email already registered!' };
+      return { status: 409, message: 'Email already registered!'};
     }
     recruiterData.is_verified = false;
-    recruiterData.password = 'recruiter123'
+    recruiterData.password = await bcryptjs.hash('recruiter123', 10)
 
     console.log('recruiter data is service', recruiterData)
     const recruiter = await this.recruiterRepository.createRecruiter(recruiterData);
@@ -35,10 +35,10 @@ export class RecruiterService {
       return { status: 404, message: 'recuiter not found' }
     }
 
-    if (recruiter.is_verified == false) {
-      console.log('not verified')
-      return { status: 404, message: 'recruiter is not verified by admin' }
-    }
+    // if (recruiter.is_verified == false) {
+    //   console.log('not verified')
+    //   return { status: 404, message: 'recruiter is not verified by admin' }
+    // }
 
     const isPasswordValid = await bcrypt.compare(password, recruiter.password!);
     if (!isPasswordValid) {
@@ -97,21 +97,28 @@ export class RecruiterService {
     }
   }
 
-  async getNearbyRecruiters(latitude: number,longitude: number): Promise<string[]> {
-    let radius = 5;
+  async getNearbyRecruiters(latitude: number, longitude: number): Promise<string[]> {
+    let radius = 5; 
+    console.log('locaiotn for animal report in recruterje srevice for finding nearby recruitrs',latitude,longitude)
     let recruiters: IRecruiter[] = [];
 
-    while (recruiters.length === 0 && radius <= 50) {
-      recruiters = await this.findRecruitersByRadius(latitude, longitude, radius);
-      if (recruiters.length === 0) radius += 5; 
+    while (recruiters.length === 0 && radius <=100) {
+        recruiters = await this.findRecruitersByRadius(latitude, longitude, radius);
+        if (recruiters.length === 0) radius += 5;
     }
 
     return recruiters.map((recruiter) => recruiter._id!.toString());
-  }
+}
+
   
-  async findRecruitersByRadius(latitude: number,longitude: number,radiusInKm: number): Promise<IRecruiter[]> {
+
+  async findRecruitersByRadius(latitude: number, longitude: number, radiusInKm: number): Promise<IRecruiter[]> {
     return this.recruiterRepository.findRecruitersNearby(latitude, longitude, radiusInKm);
 }
+
+
+
+
 
 
 }

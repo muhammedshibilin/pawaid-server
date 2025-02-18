@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import authenticateJWT from '../middlewares/authentication';
 import AdminController from '../controllers/admin.controller';
-import AdminService from '../services/admin.service';
+import AdminService from '../services/implementation/admin.service';
 import AdminRepository from '../repositories/implementations/admin.repository';
 import { BaseRepository } from '../repositories/implementations/base.repository';
-import { IUser } from '../interfaces/types/IUser';
+import { IUser } from '../entities/IUser';
 import User from '../models/user.model';
-import { IDoctor } from '../interfaces/types/IDocotor.interface';
+import { IDoctor } from '../entities/IDocotor.interface';
 import Doctor from '../models/doctor.model';
-import { IRecruiter } from '../interfaces/types/IRecruiter.interface';
+import { IRecruiter } from '../entities/IRecruiter.interface';
 import Recruiter from '../models/recruiter.model';
 
 const adminRepository = new AdminRepository();

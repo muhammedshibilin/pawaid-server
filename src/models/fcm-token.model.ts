@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IFCMToken } from "../interfaces/types/IFcm-token.interface";
+import { IFCMToken } from "../entities/IFcm-token.interface";
 
 const FCMTokenSchema = new Schema<IFCMToken>(
     {

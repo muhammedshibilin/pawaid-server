@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IBaseRepository } from "../../interfaces/repositories/IBaseRepository";
+import { IBaseRepository } from "../interfaces/IBaseRepository";
 
 export class BaseRepository<T> implements IBaseRepository<T> {
   private readonly model: mongoose.Model<T>;

@@ -1,11 +1,11 @@
-import { IDoctorRepository } from "../interfaces/repositories/IDoctorRepository";
+import { IDoctorRepository } from "../../repositories/interfaces/IDoctorRepository";
 import bcrypt from 'bcryptjs';
-import { IDoctor } from "../interfaces/types/IDocotor.interface";
-import { IBaseRepository } from "../interfaces/repositories/IBaseRepository";
+import { IDoctor } from "../../entities/IDocotor.interface";
+import { IBaseRepository } from "../../repositories/interfaces/IBaseRepository";
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { ServiceResponse } from "../interfaces/types/service-response.interface";
-import { generateJwtToken } from "../utilities/generateJwt";
+import { ServiceResponse } from "../../entities/service-response.interface";
+import { generateJwtToken } from "../../utilities/generateJwt";
 
 export class DoctorService {
     constructor(private doctorRepository: IDoctorRepository,private baseRepository:IBaseRepository<IDoctor>) {}
@@ -20,7 +20,7 @@ export class DoctorService {
             return { status: 409, message: 'Email already registered!' };
         }
         doctorData.is_verified = false;
-        doctorData.password = 'doctor123'
+        doctorData.password = await bcryptjs.hash('doctor123', 10)
 
         const doctor = await this.doctorRepository.createDoctor(doctorData);
         return { status: 200, message: 'Doctor registered successfully', data: doctor };
@@ -32,9 +32,9 @@ export class DoctorService {
             return {status:404,message:'doctor not found'}
         }
 
-        if (!doctor.is_verified) {
-          return {status:404,message:'you are not verfied'}
-      }
+      //   if (!doctor.is_verified) {
+      //     return {status:404,message:'you are not verfied'}
+      // }
 
         const isPasswordValid = await bcrypt.compare(password, doctor.password!);
         if (!isPasswordValid) {

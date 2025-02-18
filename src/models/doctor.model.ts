@@ -1,5 +1,5 @@
 import mongoose,{Schema,Model} from "mongoose";
-import { IDoctor } from "../interfaces/types/IDocotor.interface";
+import { IDoctor } from "../entities/IDocotor.interface";
 
 
 const DoctorSchema:Schema = new Schema<IDoctor>({

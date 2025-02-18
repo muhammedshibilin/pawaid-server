@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { FCMService } from "../services/fcm.service";
+import { FCMService } from "../services/implementation/fcm.service";
 
 export default class FCMController {
     constructor(private fcm:FCMService){}

@@ -1,11 +1,11 @@
 import bcrypt from 'bcryptjs';
-import { generateJwtToken } from '../utilities/generateJwt';
-import { IUser } from '../interfaces/types/IUser';
-import { IAdminRepository } from '../interfaces/repositories/IAdminRepository';
-import { IDoctor } from '../interfaces/types/IDocotor.interface';
-import { IRecruiter } from '../interfaces/types/IRecruiter.interface';
-import { IBaseRepository } from '../interfaces/repositories/IBaseRepository';
-import sendEmail from '../utilities/mailsender.utility';
+import { generateJwtToken } from '../../utilities/generateJwt';
+import { IUser } from '../../entities/IUser';
+import { IAdminRepository } from '../../repositories/interfaces/IAdminRepository';
+import { IDoctor } from '../../entities/IDocotor.interface';
+import { IRecruiter } from '../../entities/IRecruiter.interface';
+import { IBaseRepository } from '../../repositories/interfaces/IBaseRepository';
+import sendEmail from '../../utilities/mailsender.utility';
 
 class AdminService {
   

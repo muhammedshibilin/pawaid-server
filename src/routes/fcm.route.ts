@@ -1,6 +1,6 @@
 import { Router} from "express";
 import FCMRepository from "../repositories/implementations/fcm.repository";
-import { FCMService } from "../services/fcm.service";
+import { FCMService } from "../services/implementation/fcm.service";
 import FCMController from "../controllers/fcm.controller";
 import authenticateJWT from "../middlewares/authentication";
 

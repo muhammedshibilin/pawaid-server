@@ -1,6 +1,6 @@
-import { IDoctor } from "../types/IDocotor.interface";
-import { IRecruiter } from "../types/IRecruiter.interface";
-import { IUser } from "../types/IUser";
+import { IDoctor } from "../../entities/IDocotor.interface";
+import { IRecruiter } from "../../entities/IRecruiter.interface";
+import { IUser } from "../../entities/IUser";
 
 export interface IAdminRepository {
   getUsers(): Promise<IUser[]>;

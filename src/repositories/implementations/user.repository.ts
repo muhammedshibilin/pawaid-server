@@ -1,6 +1,6 @@
-import { IOtp } from "../../interfaces/types/IOtp";
-import { IUser } from "../../interfaces/types/IUser";
-import { IUserRepository } from "../../interfaces/repositories/IUserRepository";
+import { IOtp } from "../../entities/IOtp";
+import { IUser } from "../../entities/IUser";
+import { IUserRepository } from "../interfaces/IUserRepository";
 import { otpModel } from "../../models/otp.model";
 import User from "../../models/user.model";
 

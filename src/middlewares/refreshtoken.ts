@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { IDecodedToken } from '../interfaces/types/IDecodeToken';
+import { IDecodedToken } from '../entities/IDecodeToken';
 import dotenv from 'dotenv';
 dotenv.config();
 

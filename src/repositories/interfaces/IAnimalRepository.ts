@@ -1,4 +1,4 @@
-import { IAnimalReport } from "../types/animal-report.interface";
+import { IAnimalReport } from "../../entities/animal-report.interface";
 
 export interface IAnimalReportRepository {
   createAnimalReport(data: Partial<IAnimalReport>): Promise<IAnimalReport>;

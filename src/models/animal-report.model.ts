@@ -1,6 +1,6 @@
 import mongoose, { Schema} from 'mongoose';
 import { AnimalStatus} from '../enums/animal-status.enum';
-import { IAnimalReport } from '../interfaces/types/animal-report.interface';
+import { IAnimalReport } from '../entities/animal-report.interface';
 
 
 const AnimalReportSchema: Schema = new Schema({

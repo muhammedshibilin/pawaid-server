@@ -1,5 +1,5 @@
-import { IAnimalReportRepository } from "../interfaces/repositories/IAnimalRepository";
-import { IAnimalReport } from "../interfaces/types/animal-report.interface";
+import { IAnimalReport } from "../../entities/animal-report.interface";
+import { IAnimalReportRepository } from "../../repositories/interfaces/IAnimalRepository";
 
 class AnimalReportService {
 

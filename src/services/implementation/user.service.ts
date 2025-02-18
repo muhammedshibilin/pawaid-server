@@ -1,14 +1,14 @@
-import { IUser } from "../interfaces/types/IUser";
-import { sendEmail } from "../utilities/mailsender.utility";
-import { sendOtp } from "../config/twilio.config"
+import { IUser } from "../../entities/IUser";
+import { sendEmail } from "../../utilities/mailsender.utility";
+import { sendOtp } from "../../config/twilio.config"
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import otpGenerator from 'otp-generator'
 import dotenv from 'dotenv';
-import { generateJwtToken } from "../utilities/generateJwt";
-import { IUserRepository } from "../interfaces/repositories/IUserRepository";
-import { IBaseRepository } from "../interfaces/repositories/IBaseRepository";
-import { ServiceResponse } from "../interfaces/types/service-response.interface";
+import { generateJwtToken } from "../../utilities/generateJwt";
+import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
+import { IBaseRepository } from "../../repositories/interfaces/IBaseRepository";
+import { ServiceResponse } from "../../entities/service-response.interface";
 dotenv.config();
 
 class UserService {

@@ -1,5 +1,5 @@
-import { IUser } from "../types/IUser";
-import { IOtp } from "../types/IOtp";
+import { IUser } from "../../entities/IUser";
+import { IOtp } from "../../entities/IOtp";
 
 export interface IUserRepository {
     create(user: IUser): Promise<IUser>;

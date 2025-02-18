@@ -1,7 +1,7 @@
 import multerS3 from 'multer-s3';
 import multer from 'multer';
 import path from 'path';
-import s3Client from '../config/s3.cofig';
+import s3Client from '../../config/s3.cofig';
 
 
 const createUploadService = (folder: string) => {

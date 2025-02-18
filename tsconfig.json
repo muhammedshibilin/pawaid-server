@@ -14,5 +14,5 @@
       "./src/express.d" 
     ]
   },
-  "include": ["src/**/*", "src/express.d.ts", "src/app.ts"]
+  "include": ["src/**/*", "src/types/express.d.ts", "src/app.ts"]
 }

@@ -1,4 +1,4 @@
-import { IDoctor } from "../types/IDocotor.interface";
+import { IDoctor } from "../../entities/IDocotor.interface";
 
 export interface IDoctorRepository {
   createDoctor(doctorData: Partial<IDoctor>): Promise<IDoctor>;

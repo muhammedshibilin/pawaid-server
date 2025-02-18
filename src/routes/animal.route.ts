@@ -1,18 +1,18 @@
 import { Router} from "express";
-import createUploadService from "../services/upload.service";
+import createUploadService from "../services/implementation/upload.service";
 import authenticateJWT from "../middlewares/authentication";
 import AnimalRepository from "../repositories/implementations/animal.repository";
-import AnimalReportService from "../services/animal.service";
+import AnimalReportService from "../services/implementation/animal.service";
 import AnimalReportController from "../controllers/animal.controller";
 import FCMRepository from "../repositories/implementations/fcm.repository";
-import { FCMService } from "../services/fcm.service";
+import { FCMService } from "../services/implementation/fcm.service";
 import RecruiterAlert from "../models/recruiters-alert.model";
-import { RecruiterAlertService } from "../services/recruiter-alert.service";
+import { RecruiterAlertService } from "../services/implementation/recruiter-alert.service";
 import { RecruiterAlertRepository } from "../repositories/implementations/recruiter-alert.repository";
 import { RecruiterRepository } from "../repositories/implementations/recruiter.repository";
-import { RecruiterService } from "../services/recruiter.service";
+import { RecruiterService } from "../services/implementation/recruiter.service";
 import { BaseRepository } from "../repositories/implementations/base.repository";
-import { IRecruiter } from "../interfaces/types/IRecruiter.interface";
+import { IRecruiter } from "../entities/IRecruiter.interface";
 import Recruiter from "../models/recruiter.model";
 const animalRoute = Router()
 
@@ -36,6 +36,5 @@ const animalService = new AnimalReportService(animalRepository)
 const animalReportController = new AnimalReportController(animalService,fcmService,recruiterAlertService,recruiterService)
 
 animalRoute.post('/animal-report',upload.single('image'),authenticateJWT(['user']),animalReportController.create.bind(animalReportController))
-animalRoute.get('/animal0-report',animalReportController.getAnimalReport.bind(animalReportController))
 
 export default animalRoute

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { IOtp } from '../interfaces/types/IOtp';
+import { IOtp } from '../entities/IOtp';
 
 const otpSchema = new Schema<IOtp>({
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },

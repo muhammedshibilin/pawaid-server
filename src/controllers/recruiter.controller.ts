@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import { RecruiterService } from '../services/recruiter.service';
-import { UploadedFile } from '../interfaces/types/upload-file.interface';
+import { RecruiterService } from '../services/implementation/recruiter.service';
+import { UploadedFile } from '../entities/upload-file.interface';
 import { createResponse } from '../utilities/createResponse.utils';
 import { HttpStatus } from '../enums/http-status.enum';
 import { setCookie } from '../utilities/cookie.util';
-import { FCMService } from '../services/fcm.service';
+import { FCMService } from '../services/implementation/fcm.service';
+import { RecruiterAlertService } from '../services/implementation/recruiter-alert.service';
 
   
 export class RecruiterController {
@@ -65,5 +66,7 @@ export class RecruiterController {
           const response = await this.recruiterService.resetPassword(token, newPassword);
             res.status(response.status).json(createResponse(HttpStatus.OK,'password reset successfull'));    
     }
+
+    
 
 }

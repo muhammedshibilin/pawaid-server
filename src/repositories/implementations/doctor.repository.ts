@@ -1,5 +1,5 @@
-import { IDoctorRepository } from "../../interfaces/repositories/IDoctorRepository";
-import { IDoctor } from "../../interfaces/types/IDocotor.interface";
+import { IDoctorRepository } from "../interfaces/IDoctorRepository";
+import { IDoctor } from "../../entities/IDocotor.interface";
 import Doctor from "../../models/doctor.model";
 
 export class DoctorRepository implements IDoctorRepository {

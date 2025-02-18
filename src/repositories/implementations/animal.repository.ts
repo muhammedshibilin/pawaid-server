@@ -1,6 +1,6 @@
-import { IAnimalReportRepository } from "../../interfaces/repositories/IAnimalRepository";
-import { IAnimalReport } from "../../interfaces/types/animal-report.interface";
+import { IAnimalReportRepository } from "../interfaces/IAnimalRepository";
 import AnimalReport from "../../models/animal-report.model";
+import { IAnimalReport } from "../../entities/animal-report.interface";
 
 
 class AnimalReportRepository  implements IAnimalReportRepository {

@@ -1,13 +1,13 @@
 import { Router } from "express";
 import refreshAccessToken from "../middlewares/refreshtoken";
 import UserController from "../controllers/user.controller";
-import UserService from "../services/user.service";
+import UserService from "../services/implementation/user.service";
 import UserRepository from "../repositories/implementations/user.repository";
 import authenticateJWT from '../middlewares/authentication';
 import {logout} from "../utilities/cookie.util";
 import dotenv from 'dotenv';
 import { BaseRepository } from "../repositories/implementations/base.repository";
-import { IUser } from "../interfaces/types/IUser";
+import { IUser } from "../entities/IUser";
 import User from "../models/user.model";
 dotenv.config();
 

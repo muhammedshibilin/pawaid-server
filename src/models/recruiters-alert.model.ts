@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model, Document } from "mongoose";
-import { IRecruiterAlert } from "../interfaces/types/IRecruiters-alert.interface";
+import { IRecruiterAlert } from "../entities/IRecruiters-alert.interface";
 
 const RecruiterAlertSchema: Schema = new Schema<IRecruiterAlert>(
   {

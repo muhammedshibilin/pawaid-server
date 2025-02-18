@@ -1,5 +1,5 @@
-import mongoose, { Schema, Model, Document } from "mongoose";
-import { IRecruiter } from "../interfaces/types/IRecruiter.interface";
+import mongoose, { Schema, Model} from "mongoose";
+import { IRecruiter } from "../entities/IRecruiter.interface";
 
 const RecruiterSchema: Schema = new Schema<IRecruiter>({
     username: { type: String, required: true, unique: true, trim: true },

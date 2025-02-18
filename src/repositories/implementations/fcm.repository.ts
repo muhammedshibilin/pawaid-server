@@ -1,6 +1,7 @@
-import { IFcmRepository } from "../../interfaces/repositories/IFcmRepository";
-import { IFCMToken } from "../../interfaces/types/IFcm-token.interface";
+import { IFcmRepository } from "../interfaces/IFcmRepository";
+import { IFCMToken } from "../../entities/IFcm-token.interface";
 import fcmTokenModel from "../../models/fcm-token.model";
+import { fcm } from "googleapis/build/src/apis/fcm";
 
 class FCMRepository implements IFcmRepository{
   async saveOrUpdateToken(userId: string, token: string,role:string): Promise<IFCMToken> {
@@ -30,6 +31,15 @@ class FCMRepository implements IFcmRepository{
     expiryDate.setDate(expiryDate.getDate() - days);
     await fcmTokenModel.deleteMany({ lastUsedAt: { $lt: expiryDate } });
   }
+
+  async getRecruitersTokensByIds(recruiterIds: string[]): Promise<string[]> {
+    const recruiters = await fcmTokenModel.find({ 
+      userId: { $in: recruiterIds } 
+    }) 
+  
+    return recruiters.map(recruiter => recruiter.token);
+  }
+  
 }
 
 export default FCMRepository;

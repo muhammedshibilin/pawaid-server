@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import createUploadService from '../services/upload.service';
+import createUploadService from '../services/implementation/upload.service';
 import { DoctorController } from '../controllers/doctor.controller';
 import { DoctorRepository } from '../repositories/implementations/doctor.repository';
-import { DoctorService } from '../services/doctor.service';
+import { DoctorService } from '../services/implementation/doctor.service';
 import { BaseRepository } from '../repositories/implementations/base.repository';
-import { IDoctor } from '../interfaces/types/IDocotor.interface';
+import { IDoctor } from '../entities/IDocotor.interface';
 import Doctor from '../models/doctor.model';
 import authenticateJWT from '../middlewares/authentication';
 import FCMRepository from '../repositories/implementations/fcm.repository';
-import { FCMService } from '../services/fcm.service';
+import { FCMService } from '../services/implementation/fcm.service';
 const doctorRoute = Router();
 
 
