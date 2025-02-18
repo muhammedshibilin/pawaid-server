@@ -1,17 +1,18 @@
 import { Router} from "express";
-import FCMRepository from "../repositories/implementations/fcm.repository";
-import { FCMService } from "../services/implementation/fcm.service";
-import FCMController from "../controllers/fcm.controller";
 import authenticateJWT from "../middlewares/authentication";
+import { controllers } from "../controllers";
 
 
 const fcmRoute = Router()
 
-const fcmRepository = new FCMRepository()
-const fcmService = new FCMService(fcmRepository)
-const fcmController = new FCMController(fcmService)
+fcmRoute.post('/subscribe',
+    authenticateJWT(['user','admin','recruiter','doctor']),
+    controllers.fcmController.registerToken.bind(controllers.fcmController))
 
-fcmRoute.post('/subscribe',authenticateJWT(['user','admin','recruiter','doctor']),fcmController.registerToken.bind(fcmController))
-fcmRoute.post('/unsubscribe',authenticateJWT(['user','admin','recruiter','doctor']),fcmController.removeToken.bind(fcmController))
+fcmRoute.post('/unsubscribe',
+    authenticateJWT(['user','admin','recruiter','doctor']),
+    controllers.fcmController.removeToken.bind(controllers.fcmController))
+
+    
 
 export default fcmRoute

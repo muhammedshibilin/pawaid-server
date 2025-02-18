@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { IUser } from '../entities/IUser';
-import { createResponse } from '../utilities/createResponse.utils';
-import { HttpStatus } from '../enums/http-status.enum';
-import { setCookie } from '../utilities/cookie.util';
-import UserService from '../services/implementation/user.service';
+import { IUser } from '../../entities/IUser';
+import { createResponse } from '../../utilities/createResponse.utils';
+import { HttpStatus } from '../../enums/http-status.enum';
+import { setCookie } from '../../utilities/cookie.util';
+import UserService from '../../services/implementation/user.service';
 
 
 

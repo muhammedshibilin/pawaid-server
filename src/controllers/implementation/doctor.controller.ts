@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { DoctorService } from '../services/implementation/doctor.service';
-import { HttpStatus } from "../enums/http-status.enum";
-import { createResponse } from '../utilities/createResponse.utils';
-import { UploadedFile } from '../entities/upload-file.interface';
-import { setCookie } from '../utilities/cookie.util';
-import { FCMService } from '../services/implementation/fcm.service';
+import { DoctorService } from '../../services/implementation/doctor.service';
+import { HttpStatus } from "../../enums/http-status.enum";
+import { createResponse } from '../../utilities/createResponse.utils';
+import { UploadedFile } from '../../entities/upload-file.interface';
+import { setCookie } from '../../utilities/cookie.util';
+import { FCMService } from '../../services/implementation/fcm.service';
 
 
 

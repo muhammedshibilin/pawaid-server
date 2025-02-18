@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { RecruiterService } from '../services/implementation/recruiter.service';
-import { UploadedFile } from '../entities/upload-file.interface';
-import { createResponse } from '../utilities/createResponse.utils';
-import { HttpStatus } from '../enums/http-status.enum';
-import { setCookie } from '../utilities/cookie.util';
-import { FCMService } from '../services/implementation/fcm.service';
-import { RecruiterAlertService } from '../services/implementation/recruiter-alert.service';
+import { RecruiterService } from '../../services/implementation/recruiter.service';
+import { UploadedFile } from '../../entities/upload-file.interface';
+import { createResponse } from '../../utilities/createResponse.utils';
+import { HttpStatus } from '../../enums/http-status.enum';
+import { setCookie } from '../../utilities/cookie.util';
+import { FCMService } from '../../services/implementation/fcm.service';
+import { RecruiterAlertService } from '../../services/implementation/recruiter-alert.service';
 
   
 export class RecruiterController {

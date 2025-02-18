@@ -6,9 +6,11 @@ import { IRecruiterRepository } from "../../repositories/interfaces/IRecruiterRe
 export class RecruiterAlertService {
   constructor(private recruiterAlertRepository: IRecruiterAlertRepository,private recruiterRepository:IRecruiterRepository) {}
 
-  async acceptAlert(animalReportId: string,recruiterId:string): Promise<IAnimalReport| null> {
-    await this.recruiterRepository.updateAvailability(recruiterId)
-    return await this.recruiterAlertRepository.updateAlertStatus(animalReportId, "accepted");
+  async updateAlert(animalReportId: string,recruiterId:string,status:string,location:string): Promise<IAnimalReport| null> {
+    if(status === 'accepted'){
+      await this.recruiterRepository.updateAvailability(recruiterId)
+    }
+    return await this.recruiterAlertRepository.updateAlertStatus(animalReportId,status);
   }
 
 

@@ -1,33 +1,26 @@
 import { Router } from 'express';
 import createUploadService from '../services/implementation/upload.service';
-import { DoctorController } from '../controllers/doctor.controller';
-import { DoctorRepository } from '../repositories/implementations/doctor.repository';
-import { DoctorService } from '../services/implementation/doctor.service';
-import { BaseRepository } from '../repositories/implementations/base.repository';
-import { IDoctor } from '../entities/IDocotor.interface';
-import Doctor from '../models/doctor.model';
 import authenticateJWT from '../middlewares/authentication';
-import FCMRepository from '../repositories/implementations/fcm.repository';
-import { FCMService } from '../services/implementation/fcm.service';
-const doctorRoute = Router();
+import { controllers } from '../controllers';
 
 
 const upload = createUploadService('doctors')
-
-const fcmRepository = new FCMRepository()
-const fcmService = new FCMService(fcmRepository)
-
-const baseRepository = new BaseRepository<IDoctor>(Doctor)
-const doctorRepository = new DoctorRepository()
-const doctorService = new DoctorService(doctorRepository,baseRepository)
-const doctorController = new DoctorController(doctorService,fcmService);
-
-doctorRoute.post('/register',upload.single('document'),doctorController.register.bind(doctorController));
-doctorRoute.post('/login', doctorController.login.bind(doctorController));
-doctorRoute.get('/profile',authenticateJWT(['doctor']),doctorController.getProfile.bind(doctorController))
-
-doctorRoute.post('/reset-password',doctorController.resetPassword.bind(doctorController))
+const doctorRoute = Router();
 
 
+doctorRoute.post('/register',
+    upload.single('document'),
+    controllers.doctorController.register.bind(controllers.doctorController));
 
+doctorRoute.post('/login',
+    controllers.doctorController.login.bind(controllers.doctorController));
+
+doctorRoute.get('/profile',
+    authenticateJWT(['doctor']),
+    controllers.doctorController.getProfile.bind(controllers.doctorController))
+
+doctorRoute.post('/reset-password',
+    controllers.doctorController.resetPassword.bind(controllers.doctorController))
+
+    
 export default doctorRoute;

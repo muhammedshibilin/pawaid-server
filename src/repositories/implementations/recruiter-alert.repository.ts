@@ -19,6 +19,8 @@ export class RecruiterAlertRepository implements IRecruiterAlertRepository {
       return await AnimalReport.findByIdAndUpdate(alertId, { status }, { new: true });
     }
 
+    
+
     async getRescueAlertsByRecruiter(recruiterId: string): Promise<IAnimalReport[]> {
       return await AnimalReport.find({ 
         recruiterId: recruiterId, 
