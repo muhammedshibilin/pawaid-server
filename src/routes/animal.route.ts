@@ -23,18 +23,24 @@ const upload = createUploadService('reports')
 const fcmRepository = new FCMRepository()
 const fcmService = new FCMService(fcmRepository)
 
-const recruiterAlertRepository = new RecruiterAlertRepository()
-const recruiterAlertService = new RecruiterAlertService(recruiterAlertRepository)
+
 
 
 const recruiterRepository = new RecruiterRepository()
 const baseRepository = new BaseRepository<IRecruiter>(Recruiter)
 const recruiterService = new RecruiterService(recruiterRepository,baseRepository)
 
+const recruiterAlertRepository = new RecruiterAlertRepository()
+const recruiterAlertService = new RecruiterAlertService(recruiterAlertRepository,recruiterRepository)
+
 const animalRepository = new AnimalRepository()
 const animalService = new AnimalReportService(animalRepository)
 const animalReportController = new AnimalReportController(animalService,fcmService,recruiterAlertService,recruiterService)
 
 animalRoute.post('/animal-report',upload.single('image'),authenticateJWT(['user']),animalReportController.create.bind(animalReportController))
+
+
+
+
 
 export default animalRoute

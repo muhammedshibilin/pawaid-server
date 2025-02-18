@@ -30,17 +30,20 @@ const recruiterController = new RecruiterController(recruiterService,fcmService)
 
 
 
-recruiterRoute.post('/register',upload.single('document'),recruiterController.register.bind(recruiterController));
-recruiterRoute.post('/login', recruiterController.login.bind(recruiterController));
-recruiterRoute.get('/profile',authenticateJWT(['recruiter']),recruiterController.getProfile.bind(recruiterController))
-
-recruiterRoute.post('/reset-password',recruiterController.resetPassword.bind(recruiterController))
 
 
 
 const recruiterAlert = new RecruiterAlertRepository()
-const recruiterAlertService = new RecruiterAlertService(recruiterAlert)
+const recruiterAlertService = new RecruiterAlertService(recruiterAlert,recruiterRepository)
 const recruiterAlertController = new RecruiterAlertController(recruiterAlertService)
+
+
+
+recruiterRoute.post('/register',upload.single('document'),recruiterController.register.bind(recruiterController));
+recruiterRoute.post('/login', recruiterController.login.bind(recruiterController));
+recruiterRoute.get('/profile',authenticateJWT(['recruiter']),recruiterController.getProfile.bind(recruiterController))
+recruiterRoute.post('/reset-password',recruiterController.resetPassword.bind(recruiterController))
+
 
 recruiterRoute.get('/rescue-alert/:recruiterId', recruiterAlertController.fetchRescueAlertsForRecruiter.bind(recruiterAlertController));
 recruiterRoute.post('/accept-rescue',recruiterAlertController.acceptRescue.bind(recruiterAlertController))

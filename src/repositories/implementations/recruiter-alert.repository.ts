@@ -1,7 +1,7 @@
 import { IRecruiterAlertRepository } from "../interfaces/IRecruiterAlertRepository";
-import { IRecruiterAlert } from "../../entities/IRecruiters-alert.interface";
-import RecruiterAlert from "../../models/recruiters-alert.model";
 import { ObjectId } from "mongoose";
+import AnimalReport from "../../models/animal-report.model";
+import { IAnimalReport } from "../../entities/animal-report.interface";
 
 
 export interface IRescueAlert {
@@ -14,24 +14,15 @@ export interface IRescueAlert {
 }
 
 export class RecruiterAlertRepository implements IRecruiterAlertRepository {
-    async createRecruiterAlert(alertData: Partial<IRecruiterAlert>): Promise<IRecruiterAlert> {
-      return await RecruiterAlert.create(alertData);
-    }
-  
-    async updateAlertStatus(alertId: string, status: "accepted"): Promise<IRecruiterAlert | null> {
-      return await RecruiterAlert.findByIdAndUpdate(alertId, { status }, { new: true });
+
+    async updateAlertStatus(alertId: string, status: "accepted"): Promise<IAnimalReport| null> {
+      return await AnimalReport.findByIdAndUpdate(alertId, { status }, { new: true });
     }
 
-    async getRescueAlertsByRecruiter(recruiterId: string): Promise<IRecruiterAlert[]> {
-      return await RecruiterAlert.find({ 
-          notifiedRecruiters: recruiterId, 
-          status: "pending" 
+    async getRescueAlertsByRecruiter(recruiterId: string): Promise<IAnimalReport[]> {
+      return await AnimalReport.find({ 
+        recruiterId: recruiterId, 
         })
-        .populate({
-          path: "animalReportId",
-          select: "location",
-        })
-        .exec();
     }
     
 }

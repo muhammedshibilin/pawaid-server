@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import admin from "../../config/firebase-admin.config";
 import { IFcmRepository } from "../../repositories/interfaces/IFcmRepository";
 
@@ -20,7 +21,7 @@ export class FCMService {
     return adminTokens
   }
 
-  async findRecruitersToken(id:string[]){
+  async findRecruitersToken(id:Types.ObjectId[]){
     const tokens = this.fcm.getRecruitersTokensByIds(id)
     return tokens
   }

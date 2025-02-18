@@ -1,44 +1,33 @@
-import { Types } from "mongoose";
 import { IRecruiterAlertRepository } from "../../repositories/interfaces/IRecruiterAlertRepository";
-import { IRecruiterAlert } from "../../entities/IRecruiters-alert.interface";
-import { IRescueAlert } from "../../repositories/implementations/recruiter-alert.repository";
+import { IAnimalReport } from "../../entities/animal-report.interface";
+import { RescueAlertDTO } from "../../dto/rescue-alert.dto";
+import { IRecruiterRepository } from "../../repositories/interfaces/IRecruiterRepository";
 
 export class RecruiterAlertService {
-  constructor(private recruiterAlertRepository: IRecruiterAlertRepository,) {}
+  constructor(private recruiterAlertRepository: IRecruiterAlertRepository,private recruiterRepository:IRecruiterRepository) {}
 
-  async notifyRecruiters(animalReportId: string, notifiedRecruiters: string[]): Promise<IRecruiterAlert> {
-    return await this.recruiterAlertRepository.createRecruiterAlert({
-      animalReportId: new Types.ObjectId(animalReportId), 
-      notifiedRecruiters: notifiedRecruiters.map(id => new Types.ObjectId(id)), 
-    });
-  }
-
-  async acceptAlert(alertId: string): Promise<IRecruiterAlert | null> {
-    return await this.recruiterAlertRepository.updateAlertStatus(alertId, "accepted");
+  async acceptAlert(animalReportId: string,recruiterId:string): Promise<IAnimalReport| null> {
+    await this.recruiterRepository.updateAvailability(recruiterId)
+    return await this.recruiterAlertRepository.updateAlertStatus(animalReportId, "accepted");
   }
 
 
-  async fetchRescueAlertsForRecruiter(recruiterId: string) {
+  async fetchRescueAlertsForRecruiter(recruiterId: string): Promise<RescueAlertDTO[]> {
     const alerts = await this.recruiterAlertRepository.getRescueAlertsByRecruiter(recruiterId);
-    if (!alerts) return [];
-  
-    return alerts.map((alert) => {
-      const animalReport = alert.animalReportId as IRescueAlert; 
-  
-      return {
+    console.log("Rescue alerts:", alerts);
+
+    if (!alerts || alerts.length === 0) return [];
+
+    return alerts.map(alert => ({
         id: alert._id,
-        animalReportId: animalReport._id,  
-        imageUrl: animalReport.imageUrl,
+        description:alert.description,
         status: alert.status,
         location: {
-          lat: animalReport.location.latitude,
-          lng: animalReport.location.longitude,
+            lat: alert.location.latitude,
+            lng: alert.location.longitude,
         },
-      };
-    });
-  }
-  
-  
+    }));
+}
 
-    
+      
 }

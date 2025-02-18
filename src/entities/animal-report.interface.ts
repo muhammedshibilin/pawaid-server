@@ -2,6 +2,7 @@ import { Document,Types } from "mongoose";
 import { AnimalStatus } from "../enums/animal-status.enum";
 
 export interface IAnimalReport extends Document {
+  _id: Types.ObjectId;
   description: string;
   imageUrl: string;
   status:AnimalStatus;
@@ -10,7 +11,7 @@ export interface IAnimalReport extends Document {
     longitude: number;
   },
   userId: Types.ObjectId;
-  recruiterId?: Types.ObjectId; 
-  doctorId?: Types.ObjectId;
+  recruiterId?: Types.ObjectId|Types.ObjectId[]; 
+  doctorId?: Types.ObjectId|Types.ObjectId[];
   expenses?: number;
-}
+} 

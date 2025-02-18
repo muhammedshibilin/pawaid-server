@@ -1,8 +1,6 @@
-import { IRecruiterAlert } from "../../entities/IRecruiters-alert.interface";
+import { IAnimalReport } from "../../entities/animal-report.interface";
 
 export interface IRecruiterAlertRepository {
-  createRecruiterAlert(alertData: Partial<IRecruiterAlert>): Promise<IRecruiterAlert>;
-  updateAlertStatus(alertId: string, status: "accepted"): Promise<IRecruiterAlert | null>;
-  getRescueAlertsByRecruiter(recruiterId: string): Promise<IRecruiterAlert[]|null> 
-
+  updateAlertStatus(alertId: string, status: "accepted"): Promise<IAnimalReport| null>;
+  getRescueAlertsByRecruiter(recruiterId: string): Promise<IAnimalReport[]|null> 
 }

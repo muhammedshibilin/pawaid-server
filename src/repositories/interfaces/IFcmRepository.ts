@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { IFCMToken } from "../../entities/IFcm-token.interface";
 
 export interface IFcmRepository{
@@ -6,5 +7,5 @@ export interface IFcmRepository{
       deleteToken(userId: string): Promise<void> 
       cleanupOldTokens(days: number): Promise<void> 
       getAdminTokens(): Promise<string[]>
-      getRecruitersTokensByIds(recruiterIds: string[]): Promise<string[]>
+      getRecruitersTokensByIds(recruiterIds: Types.ObjectId[]): Promise<string[]>
 }

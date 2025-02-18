@@ -6,6 +6,7 @@ import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { ServiceResponse } from "../../entities/service-response.interface";
 import { generateJwtToken } from "../../utilities/generateJwt";
+import { Types } from "mongoose";
 
 export class RecruiterService {
   constructor(private recruiterRepository: IRecruiterRepository, private baseRepository: IBaseRepository<IRecruiter>) { }
@@ -97,22 +98,22 @@ export class RecruiterService {
     }
   }
 
-  async getNearbyRecruiters(latitude: number, longitude: number): Promise<string[]> {
-    let radius = 5; 
-    console.log('locaiotn for animal report in recruterje srevice for finding nearby recruitrs',latitude,longitude)
-    let recruiters: IRecruiter[] = [];
-
-    while (recruiters.length === 0 && radius <=100) {
-        recruiters = await this.findRecruitersByRadius(latitude, longitude, radius);
-        if (recruiters.length === 0) radius += 5;
+  async getNearbyRecruiters(latitude: number, longitude: number): Promise<Types.ObjectId[]> {
+    let radius = 5;
+    let recruiterIds: Types.ObjectId[] = [];
+    
+    while (recruiterIds.length === 0 && radius <= 100) {
+      recruiterIds = await this.findRecruitersByRadius(latitude, longitude, radius);
+      if (recruiterIds.length === 0) radius += 5;
     }
 
-    return recruiters.map((recruiter) => recruiter._id!.toString());
+    return recruiterIds;
 }
+
 
   
 
-  async findRecruitersByRadius(latitude: number, longitude: number, radiusInKm: number): Promise<IRecruiter[]> {
+  async findRecruitersByRadius(latitude: number, longitude: number, radiusInKm: number): Promise<Types.ObjectId[]> {
     return this.recruiterRepository.findRecruitersNearby(latitude, longitude, radiusInKm);
 }
 

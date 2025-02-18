@@ -11,6 +11,7 @@ import s3Client from "../config/s3.cofig";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { sdkStreamMixin } from "@aws-sdk/util-stream-node";
 import { Readable } from "stream";
+import axios from 'axios'
 
 class AnimalReportController {
 
@@ -86,23 +87,27 @@ class AnimalReportController {
     
         let extractedLocation = await this.extractGeoTag(fileKey);
         let finalLocation = extractedLocation ? extractedLocation : JSON.parse(location);
+        console.log('final Location',finalLocation)
     
         if (!title || !location || !imageUrl) {
           return res.status(400).json({ message: "Missing required fields" });
         }
+
+        const recruiters = await this.recruiterService.getNearbyRecruiters(finalLocation.latitude,finalLocation.longitude);
+
     
         const newReport = await this.animalService.createAnimalReport({
           description: title,
           imageUrl,
-          location: finalLocation,
+          location:finalLocation,
           userId: req.user.id,
+          recruiterId:recruiters
         });
+
+        let address = await axios.get(`https://us1.locationiq.com/v1/reverse.php?key=${process.env.LOCATIONIQ_KEY}&lat=${finalLocation.latitude}&lon=${finalLocation.longitude}&format=json`)
     
-        const recruiters = await this.recruiterService.getNearbyRecruiters(newReport.location.latitude, newReport.location.longitude);
-        console.log('recruiter to alert',recruiters)
-        await this.recruiterAlertService.notifyRecruiters(newReport._id!.toString(), recruiters);
         const recruitersToAlert = await this.fcmService.findRecruitersToken(recruiters)
-        await this.fcmService.sendPushNotification(recruitersToAlert,"rescue alert","new doctor registered",'http://localhost:4200/profile')
+        await this.fcmService.sendPushNotification(recruitersToAlert,"rescue alert",`rescue alert from${address}`,'http://localhost:4200/profile')
         return res.status(201).json(createResponse(HttpStatus.OK, "reported successfully"));
       } catch (error) {
         console.error("Error creating animal report:", error);
