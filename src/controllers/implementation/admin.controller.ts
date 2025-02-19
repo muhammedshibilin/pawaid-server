@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
-import AdminService from '../../services/implementation/admin.service';
 import { setCookie } from '../../utilities/cookie.util';
 import { createResponse } from '../../utilities/createResponse.utils';
 import { HttpStatus } from '../../enums/http-status.enum';
+import { IAdminService } from '../../services/interface/IAdminService.interface';
 
 
 
 class AdminController {
 
-    constructor(private adminService: AdminService) {
+    constructor(private adminService: IAdminService) {
      
     }
 

@@ -22,9 +22,8 @@ recruiterRoute.get("/profile",
     controllers.recruiterController.getProfile.bind(controllers.recruiterController));
 recruiterRoute.get("/rescue-alert/:recruiterId",
     authenticateJWT(['recruiter']),
-    controllers.recruiterAlertController.fetchRescueAlertsForRecruiter.bind(controllers.recruiterAlertController));
-recruiterRoute.post("/update-alert",
-    controllers.recruiterAlertController.updateAlert.bind(controllers.recruiterAlertController));
+    controllers.animalReportController.fetchRescueAlertsForRecruiter.bind(controllers.animalReportController));
+
 
 
 

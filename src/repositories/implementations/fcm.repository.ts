@@ -1,7 +1,7 @@
-import { IFcmRepository } from "../interfaces/IFcmRepository";
 import { IFCMToken } from "../../entities/IFcm-token.interface";
 import fcmTokenModel from "../../models/fcm-token.model";
 import { Types } from "mongoose";
+import { IFcmRepository } from "../interfaces/IFcmRepository";
 
 class FCMRepository implements IFcmRepository{
   async saveOrUpdateToken(userId: string, token: string,role:string): Promise<IFCMToken> {

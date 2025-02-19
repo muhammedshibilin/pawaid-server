@@ -9,7 +9,6 @@ import AnimalReportRepository from "./implementations/animal.repository";
 import { BaseRepository } from "./implementations/base.repository";
 import { DoctorRepository } from "./implementations/doctor.repository";
 import FCMRepository from "./implementations/fcm.repository";
-import { RecruiterAlertRepository } from "./implementations/recruiter-alert.repository";
 import { RecruiterRepository } from "./implementations/recruiter.repository";
 import UserRepository from "./implementations/user.repository";
 
@@ -20,7 +19,6 @@ export const repositories = {
   doctorRepository: new DoctorRepository(),
   recruiterRepository: new RecruiterRepository(),
   userRepository: new UserRepository(),
-  recruiterAlertRepository: new RecruiterAlertRepository(),
   fcmRepository: new FCMRepository(),
   
 

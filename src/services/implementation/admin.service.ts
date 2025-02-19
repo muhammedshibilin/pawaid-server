@@ -6,8 +6,9 @@ import { IDoctor } from '../../entities/IDocotor.interface';
 import { IRecruiter } from '../../entities/IRecruiter.interface';
 import { IBaseRepository } from '../../repositories/interfaces/IBaseRepository';
 import sendEmail from '../../utilities/mailsender.utility';
+import { IAdminService } from '../interface/IAdminService.interface';
 
-class AdminService {
+class AdminService implements IAdminService {
   
 
   constructor(private adminRepository: IAdminRepository,private userBaseRepository:IBaseRepository<IUser>,private doctorBaseRepository:IBaseRepository<IDoctor>,private recruiterBaseRepository:IBaseRepository<IRecruiter>) {

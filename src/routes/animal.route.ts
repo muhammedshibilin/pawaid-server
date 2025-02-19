@@ -12,7 +12,8 @@ const animalRoute = Router()
 animalRoute.post('/animal-report', upload.single('image'),
     authenticateJWT(['user']),
     controllers.animalReportController.create.bind(controllers.animalReportController))
-
+animalRoute.post("/update-alert",
+    controllers.animalReportController.updateAlert.bind(controllers.animalReportController));
 
 
 

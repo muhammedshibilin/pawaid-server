@@ -14,5 +14,9 @@ export class DoctorRepository implements IDoctorRepository {
             { new: true }
         );
     }
+
+    async findDoctors():Promise<IDoctor[]>{
+        return await Doctor.find()
+    }
      
 }

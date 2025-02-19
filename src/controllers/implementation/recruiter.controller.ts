@@ -5,7 +5,6 @@ import { createResponse } from '../../utilities/createResponse.utils';
 import { HttpStatus } from '../../enums/http-status.enum';
 import { setCookie } from '../../utilities/cookie.util';
 import { FCMService } from '../../services/implementation/fcm.service';
-import { RecruiterAlertService } from '../../services/implementation/recruiter-alert.service';
 
   
 export class RecruiterController {
@@ -26,7 +25,7 @@ export class RecruiterController {
       const result = await this.recruiterService.register(recruiterData);
       const admins = await this.fcmService.findAdminsToken()
       console.log('tokens',admins)
-      await this.fcmService.sendPushNotification(admins,"registration alert","new recruiter registered",'http://localhost:4200/admin/profile')
+      await this.fcmService.sendPushNotification(admins.data,"registration alert","new recruiter registered",'http://localhost:4200/admin/profile')
       return res.status(result.status).json({ message: result.message, data: result.data });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });

@@ -22,5 +22,8 @@ doctorRoute.get('/profile',
 doctorRoute.post('/reset-password',
     controllers.doctorController.resetPassword.bind(controllers.doctorController))
 
+doctorRoute.get("/rescue-appointment/:doctorId",
+        authenticateJWT(['doctor']),
+        controllers.animalReportController.fetchRescueAppointment.bind(controllers.animalReportController));
     
 export default doctorRoute;

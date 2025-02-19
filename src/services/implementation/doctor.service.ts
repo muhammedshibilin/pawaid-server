@@ -6,9 +6,16 @@ import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { ServiceResponse } from "../../entities/service-response.interface";
 import { generateJwtToken } from "../../utilities/generateJwt";
+import { IDoctorService } from "../interface/IDoctorService.interface";
+import { RescueAppointmentDTO } from "../../dto/rescue-appointment.dto";
+import { IAnimalReportRepository } from "../../repositories/interfaces/IAnimalRepository";
 
-export class DoctorService {
-    constructor(private doctorRepository: IDoctorRepository,private baseRepository:IBaseRepository<IDoctor>) {}
+
+
+export class DoctorService implements IDoctorService{
+    constructor(private doctorRepository: IDoctorRepository,
+      private baseRepository:IBaseRepository<IDoctor>,
+    private animalRepository:IAnimalReportRepository) {}
 
     async register(doctorData: Partial<IDoctor>): Promise<{ status: number; message: string; data?: IDoctor }> {
         if (!doctorData.email) {
@@ -90,5 +97,42 @@ export class DoctorService {
           console.error('Error resetting password:', error);
           return { status: 500, message: 'Internal server error, please try again later' }; 
         }
+      }
+
+       async getNearbyDoctors(latitude: number, longitude: number): Promise<IDoctor[]> {
+          let radius = 5;
+          let doctors:IDoctor[] = [];
+          
+          while (doctors.length === 0 && radius <= 100) {
+            doctors = await this.findDoctorsByRadius(latitude, longitude, radius);
+            if (doctors.length === 0) radius += 5;
+          }
+      
+          return doctors;
+      }
+      
+        async findDoctorsByRadius(latitude: number, longitude: number, radiusInKm: number): Promise<IDoctor[]> {
+          return this.baseRepository.findNearby(latitude, longitude, radiusInKm);
+      }
+
+
+      async fetchRescueAppointment(recruiterId:string): Promise<RescueAppointmentDTO[]> {
+        const alerts = await this.animalRepository.getRescueAppointment(recruiterId);
+        console.log("Rescue alerts:", alerts);
+      
+        if (!alerts || alerts.length === 0) return [];
+      
+        return alerts.map(alert => ({
+          id: alert._id,
+          description: alert.description,
+          status: alert.status,
+          date: alert.createdAt ? new Date(alert.createdAt) : new Date()
+      }));
+      }
+
+
+      async findDoctors():Promise<{status:number;message:string;doctors:IDoctor[]}>{
+        const doctors = await this.doctorRepository.findDoctors()
+        return {status:200,message:'doctor fetched successfully',doctors:doctors}
       }
 }

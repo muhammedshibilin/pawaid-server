@@ -7,9 +7,16 @@ import jwt from 'jsonwebtoken';
 import { ServiceResponse } from "../../entities/service-response.interface";
 import { generateJwtToken } from "../../utilities/generateJwt";
 import { Types } from "mongoose";
+import { IRecruiterService } from "../interface/IRecruiterService.interface";
+import { RescueAlertDTO } from "../../dto/rescue-alert.dto";
+import { IAnimalReportRepository } from "../../repositories/interfaces/IAnimalRepository";
 
-export class RecruiterService {
-  constructor(private recruiterRepository: IRecruiterRepository, private baseRepository: IBaseRepository<IRecruiter>) { }
+export class RecruiterService implements IRecruiterService{
+  constructor(
+    private recruiterRepository: IRecruiterRepository,
+    private baseRepository: IBaseRepository<IRecruiter>,
+    private animalRepository:IAnimalReportRepository
+    ) { }
 
   async register(recruiterData: Partial<IRecruiter>): Promise<{ status: number; message: string; data?: IRecruiter }> {
     if (!recruiterData.email) {
@@ -98,28 +105,39 @@ export class RecruiterService {
     }
   }
 
-  async getNearbyRecruiters(latitude: number, longitude: number): Promise<Types.ObjectId[]> {
+  async getNearbyRecruiters(latitude: number, longitude: number): Promise<IRecruiter[]> {
     let radius = 5;
-    let recruiterIds: Types.ObjectId[] = [];
-    
-    while (recruiterIds.length === 0 && radius <= 100) {
-      recruiterIds = await this.findRecruitersByRadius(latitude, longitude, radius);
-      if (recruiterIds.length === 0) radius += 5;
+    let recruiters: IRecruiter[] = [];
+
+    while (recruiters.length === 0 && radius <= 100) {
+        recruiters = await this.findRecruitersByRadius(latitude, longitude, radius);
+        if (recruiters.length === 0) radius += 5;
     }
 
-    return recruiterIds;
+    return recruiters;
 }
 
 
-  
-
-  async findRecruitersByRadius(latitude: number, longitude: number, radiusInKm: number): Promise<Types.ObjectId[]> {
-    return this.recruiterRepository.findRecruitersNearby(latitude, longitude, radiusInKm);
+  async findRecruitersByRadius(latitude: number, longitude: number, radiusInKm: number): Promise<IRecruiter[]> {
+    return this.baseRepository.findNearby(latitude, longitude, radiusInKm);
 }
 
+async fetchRescueAlertsForRecruiter(recruiterId: string): Promise<RescueAlertDTO[]> {
+  const alerts = await this.animalRepository.getRescueAlertsByRecruiter(recruiterId);
+  console.log("Rescue alerts:", alerts);
 
+  if (!alerts || alerts.length === 0) return [];
 
-
-
+  return alerts.map(alert => ({
+      id: alert._id,
+      description:alert.description,
+      status: alert.status,
+      date: alert.createdAt ? new Date(alert.createdAt) : new Date(),
+      location: {
+          lat: alert.location.latitude,
+          lng: alert.location.longitude,
+      },
+  }));
+}
 
 }

@@ -9,9 +9,10 @@ import { generateJwtToken } from "../../utilities/generateJwt";
 import { IUserRepository } from "../../repositories/interfaces/IUserRepository";
 import { IBaseRepository } from "../../repositories/interfaces/IBaseRepository";
 import { ServiceResponse } from "../../entities/service-response.interface";
+import { IUserService } from "../interface/IUserService.interface";
 dotenv.config();
 
-class UserService {
+class UserService implements IUserService {
 
   constructor(private userRepository: IUserRepository,private baseRepository:IBaseRepository<IUser>) {
   }
@@ -190,23 +191,6 @@ class UserService {
     }
   }
 
-  // Helper method to generate tokens
-  private generateTokens(user: IUser) {
-    const accessToken = generateJwtToken(
-      { id: user._id, email: user.email, role: 'user' },
-      'access',
-      '15m'
-    );
-
-    const refreshToken = generateJwtToken(
-      { id: user._id, email: user.email, role: 'user' },
-      'refresh',
-      '7d'
-    );
-
-    return { accessToken, refreshToken };
-  }
-
   async loginUser(email: string, password: string): Promise<ServiceResponse<IUser>> {
     console.log('login service is called with', email, password);
 
@@ -331,6 +315,24 @@ class UserService {
     return user;
   }
 
+
+  private generateTokens(user: IUser) {
+    const accessToken = generateJwtToken(
+      { id: user._id, email: user.email, role: 'user' },
+      'access',
+      '15m'
+    );
+
+    const refreshToken = generateJwtToken(
+      { id: user._id, email: user.email, role: 'user' },
+      'refresh',
+      '7d'
+    );
+
+    return { accessToken, refreshToken };
+  }
+
+ 
 
 
 }

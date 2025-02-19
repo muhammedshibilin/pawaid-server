@@ -1,24 +1,28 @@
 import { Request, Response } from "express";
-import AnimalReportService from "../../services/implementation/animal.service";
 import { createResponse } from "../../utilities/createResponse.utils";
 import { HttpStatus } from "../../enums/http-status.enum";
 import { UploadedFile } from "../../entities/upload-file.interface";
 import { FCMService } from "../../services/implementation/fcm.service";
-import { RecruiterAlertService } from "../../services/implementation/recruiter-alert.service";
-import { RecruiterService } from "../../services/implementation/recruiter.service";
 import exifParser from 'exif-parser';
 import s3Client from "../../config/s3.cofig";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { sdkStreamMixin } from "@aws-sdk/util-stream-node";
 import { Readable } from "stream";
 import axios from 'axios'
+import { IDoctorService } from "../../services/interface/IDoctorService.interface";
+import { IRecruiterService } from "../../services/interface/IRecruiterService.interface";
+import { IAnimalReportService } from "../../services/interface/IAnimalReportService.interface";
+import { Types } from "mongoose";
+import { IRecruiter } from "../../entities/IRecruiter.interface";
+import { IDoctor } from "../../entities/IDocotor.interface";
+import { AnimalStatus } from "../../enums/animal-status.enum";
 
-class AnimalReportController {
+export default class AnimalReportController {
 
-    constructor(private animalService:AnimalReportService,
+    constructor(private animalService:IAnimalReportService,
       private fcmService:FCMService,
-      private recruiterAlertService:RecruiterAlertService,
-      private recruiterService:RecruiterService
+      private recruiterService:IRecruiterService,
+      private doctorService:IDoctorService
     ){}
 
     streamToBuffer(stream: Readable): Promise<Buffer> {
@@ -93,7 +97,9 @@ class AnimalReportController {
           return res.status(400).json({ message: "Missing required fields" });
         }
 
-        const recruiters = await this.recruiterService.getNearbyRecruiters(finalLocation.latitude,finalLocation.longitude);
+        const recruiters: IRecruiter[] = await this.recruiterService.getNearbyRecruiters(finalLocation.latitude,finalLocation.longitude);
+
+        const recruiterIds: Types.ObjectId[] = recruiters.map((recruiter) => new Types.ObjectId(recruiter._id as Types.ObjectId));
 
     
         const newReport = await this.animalService.createAnimalReport({
@@ -101,13 +107,18 @@ class AnimalReportController {
           imageUrl,
           location:finalLocation,
           userId: req.user.id,
-          recruiterId:recruiters
+          recruiterId:recruiterIds
         });
 
-        let address = await axios.get(`https://us1.locationiq.com/v1/reverse.php?key=${process.env.LOCATIONIQ_KEY}&lat=${finalLocation.latitude}&lon=${finalLocation.longitude}&format=json`)
-    
-        const recruitersToAlert = await this.fcmService.findRecruitersToken(recruiters)
-        await this.fcmService.sendPushNotification(recruitersToAlert,"rescue alert",`rescue alert from${address}`,'http://localhost:4200/profile')
+        const response = await axios.get(
+          `https://us1.locationiq.com/v1/reverse.php?key=${process.env.LOCATIONIQ_KEY}&lat=${finalLocation.latitude}&lon=${finalLocation.longitude}&format=json`
+        );
+        
+        const fullAddress = response.data.display_name; 
+        const addressParts = fullAddress.split(',').slice(0, 3).join(',');
+        
+        const recruitersToAlert = await this.fcmService.findRecruitersToken(recruiterIds)
+        await this.fcmService.sendPushNotification(recruitersToAlert.data,"rescue alert",`rescue alert from  ${addressParts}`,'http://localhost:4200/profile')
         return res.status(201).json(createResponse(HttpStatus.OK, "reported successfully"));
       } catch (error) {
         console.error("Error creating animal report:", error);
@@ -135,12 +146,64 @@ class AnimalReportController {
     }
   }
 
-  
 
- 
+  async updateAlert(req: Request, res: Response):Promise<Response> {
+    try{
+
+    const { animalReportId, recruiterId, status, location } = req.body;
+
+    const animalReport = await this.animalService.updateAlert(animalReportId, recruiterId, status)
+    if (!animalReport) {
+        return res.status(404).json({ success: false, message: 'Animal report not found' });
+    }
+
+      let doctors:IDoctor[] = []
+
+    if(animalReport.status === AnimalStatus.PICKED){
+      doctors = await this.doctorService.getNearbyDoctors(location.latitude,location.longitude);
+      const doctorsIds: Types.ObjectId[] = doctors.map((recruiter) => new Types.ObjectId(recruiter._id as Types.ObjectId));
+      await this.animalService.updateDoctors(animalReportId,doctorsIds)
+      return res.status(200).json({ status:200, message: 'animal picked successfully',data: animalReport ,doctors:doctors });
+
+    }
+
+
+    return res.status(200).json({ status:200, message: 'Rescue accepted successfully',data: animalReport });
+    }catch(error) {
+    console.log('Error updating alert:', error);
+    return res.status(500).json({ success: false, message: 'Failed to update alert' });
+}
 }
 
-export default  AnimalReportController;
+async fetchRescueAlertsForRecruiter(req: Request, res: Response): Promise<Response> {
+  try {
+      const recruiterId = req.params.recruiterId;
+
+      if (!recruiterId) {
+          return res.status(400).json({ success: false, message: "Recruiter ID is required" });
+      }
+
+      const responseData = await this.recruiterService.fetchRescueAlertsForRecruiter(recruiterId);
+      return res.status(200).json({ success: true, data: responseData });
+  } catch (error) {
+      console.error("Error fetching rescue alerts:", error);
+      return res.status(500).json({ success: false, message: "Failed to fetch rescue alerts" });
+  }
+}
+
+async fetchRescueAppointment(req:Request,res:Response):Promise<Response>{
+  const doctorId = req.params.doctorId;
+  if (!doctorId) {
+    return res.status(400).json({ success: false, message: "Recruiter ID is required" });
+}
+
+const responseData = await this.doctorService.fetchRescueAppointment(doctorId);
+return res.status(200).json({ success: true, data: responseData });
+}
+  
+
+}
+
 
 
 

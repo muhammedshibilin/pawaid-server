@@ -14,4 +14,6 @@ export interface IAnimalReport extends Document {
   recruiterId?: Types.ObjectId|Types.ObjectId[]; 
   doctorId?: Types.ObjectId|Types.ObjectId[];
   expenses?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 } 

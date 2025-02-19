@@ -3,7 +3,6 @@ import AdminService from "./implementation/admin.service";
 import AnimalReportService from "./implementation/animal.service";
 import { DoctorService } from "./implementation/doctor.service";
 import { FCMService } from "./implementation/fcm.service";
-import { RecruiterAlertService } from "./implementation/recruiter-alert.service";
 import { RecruiterService } from "./implementation/recruiter.service";
 import UserService from "./implementation/user.service";
 
@@ -18,19 +17,17 @@ export const services = {
   
   recruiterService: new RecruiterService(
     repositories.recruiterRepository,
-    repositories.recruiterBaseRepository
+    repositories.recruiterBaseRepository,
+    repositories.animalReportRepository
   ),
 
-  recruiterAlertService: new RecruiterAlertService(
-    repositories.recruiterAlertRepository,
-    repositories.recruiterRepository
-  ),
 
-  animalReportService: new AnimalReportService(repositories.animalReportRepository),
+  animalReportService: new AnimalReportService(repositories.animalReportRepository,repositories.recruiterRepository),
 
   doctorService: new DoctorService(
     repositories.doctorRepository,
-    repositories.doctorBaseRepository
+    repositories.doctorBaseRepository,
+    repositories.animalReportRepository
   ),
 
   userService: new UserService(

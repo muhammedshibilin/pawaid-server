@@ -36,6 +36,9 @@ const AnimalReportSchema: Schema = new Schema({
     }
   },
   expenses: { type: Number, default: 0 },
+},
+{
+  timestamps:true,
 });
 
 const AnimalReport = mongoose.model<IAnimalReport>('AnimalReport', AnimalReportSchema);
