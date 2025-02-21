@@ -5,7 +5,8 @@ registerToken(userId: string, token: string, role: string): Promise<{ status: nu
 removeToken(userId: string): Promise<{ status: number; message: string }> 
 cleanupTokens(): Promise<{ status: number; message: string }> 
 findAdminsToken(): Promise<{ status: number; message: string; data: string[] }>
-findRecruitersToken(id: Types.ObjectId[]): Promise<{ status: number; message: string; data: string[] }> 
+findRecruitersToken(id: Types.ObjectId[]| Types.ObjectId): Promise<{ status: number; message: string; data: string[] }> 
+findDoctorsToken(id: Types.ObjectId[]| Types.ObjectId): Promise<{ status: number; message: string; data: string[] }> 
 sendPushNotification(
     fcmTokens: string[],
     title: string,

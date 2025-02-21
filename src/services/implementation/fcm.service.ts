@@ -26,9 +26,14 @@ export class FCMService implements IFCMService {
     return { status: 200, message: "Admin tokens retrieved successfully", data: adminTokens };
   }
 
-  async findRecruitersToken(id: Types.ObjectId[]): Promise<{ status: number; message: string; data: string[] }> {
+  async findRecruitersToken(id: Types.ObjectId[]| Types.ObjectId): Promise<{ status: number; message: string; data: string[] }> {
     const tokens = await this.fcm.getRecruitersTokensByIds(id);
     return { status: 200, message: "Recruiter tokens retrieved successfully", data: tokens };
+  }
+
+  async findDoctorsToken(id: Types.ObjectId[]|Types.ObjectId): Promise<{ status: number; message: string; data: string[] }> {
+    const tokens = await this.fcm.getDoctorsTokensByIds(id);
+    return { status: 200, message: "Doctors tokens retrieved successfully", data: tokens };
   }
 
   async sendPushNotification(
@@ -49,7 +54,7 @@ export class FCMService implements IFCMService {
 
     try {
       const response = await admin.messaging().sendEachForMulticast(payload);
-
+      console.log('response from notification message sending',response)
       response.responses.forEach((resp, index) => {
         if (!resp.success) {
           console.error(`Error sending to ${fcmTokens[index]}:`, resp.error);

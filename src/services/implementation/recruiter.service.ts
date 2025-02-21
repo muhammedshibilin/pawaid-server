@@ -106,7 +106,7 @@ export class RecruiterService implements IRecruiterService{
   }
 
   async getNearbyRecruiters(latitude: number, longitude: number): Promise<IRecruiter[]> {
-    let radius = 5;
+    let radius = 3;
     let recruiters: IRecruiter[] = [];
 
     while (recruiters.length === 0 && radius <= 100) {

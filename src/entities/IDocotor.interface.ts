@@ -13,5 +13,7 @@ export interface IDoctor extends Document{
     is_block?:boolean;
     is_verified?:boolean;
     rescued?:number;
-    is_available?:boolean
+    is_available?:boolean;
+    createdAt?:Date;
+    updatedAt?:Date;
 }

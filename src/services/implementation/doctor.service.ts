@@ -100,7 +100,7 @@ export class DoctorService implements IDoctorService{
       }
 
        async getNearbyDoctors(latitude: number, longitude: number): Promise<IDoctor[]> {
-          let radius = 5;
+          let radius = 3;
           let doctors:IDoctor[] = [];
           
           while (doctors.length === 0 && radius <= 100) {

@@ -23,7 +23,13 @@ doctorRoute.post('/reset-password',
     controllers.doctorController.resetPassword.bind(controllers.doctorController))
 
 doctorRoute.get("/rescue-appointment/:doctorId",
-        authenticateJWT(['doctor']),
-        controllers.animalReportController.fetchRescueAppointment.bind(controllers.animalReportController));
-    
+    authenticateJWT(['doctor']),
+    controllers.animalReportController.fetchRescueAppointment.bind(controllers.animalReportController));
+
+    doctorRoute.get('/find-nearby',
+        authenticateJWT(['recruiter']),
+        controllers.doctorController.getNearbyDoctors.bind(controllers.animalReportController));
+
+
+
 export default doctorRoute;

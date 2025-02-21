@@ -24,10 +24,17 @@ class AnimalReportRepository  implements IAnimalReportRepository {
   }
 
 
-  async updateAlertStatus(alertId: string, status:string,recruiterId:string): Promise<IAnimalReport| null> {
-    return await AnimalReport.findByIdAndUpdate(alertId, 
-      { status,recruiterId: [new Types.ObjectId(recruiterId)] },
-       { new: true });
+  async updateAlertStatus(alertId: string, status:string,recruiterId?:string,doctorId?:string): Promise<IAnimalReport| null> {
+    if(doctorId){
+      return await AnimalReport.findByIdAndUpdate(alertId, 
+        { status,doctorId: [new Types.ObjectId(doctorId)] },
+         { new: true });
+    }else{
+      return await AnimalReport.findByIdAndUpdate(alertId, 
+        { status,recruiterId: [new Types.ObjectId(recruiterId)] },
+         { new: true });
+    }
+   
   }
 
   async getRescueAlertsByRecruiter(recruiterId: string): Promise<IAnimalReport[]>{

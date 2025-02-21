@@ -55,8 +55,10 @@ async updateRecruiterLocation(recruiterId: string, latitude: number, longitude: 
           }
   
           const updatedAvailability = !recruiter.is_available;
+
+          console.log('recrutier availability',updatedAvailability)
   
-          const updatedRecruiter = await AnimalReport.findByIdAndUpdate(
+          const updatedRecruiter = await Recruiter.findByIdAndUpdate(
               recruiter._id, 
               {is_available: updatedAvailability },
               { new: true } 

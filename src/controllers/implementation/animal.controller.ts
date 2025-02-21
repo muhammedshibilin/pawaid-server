@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { createResponse } from "../../utilities/createResponse.utils";
 import { HttpStatus } from "../../enums/http-status.enum";
 import { UploadedFile } from "../../entities/upload-file.interface";
-import { FCMService } from "../../services/implementation/fcm.service";
 import exifParser from 'exif-parser';
 import s3Client from "../../config/s3.cofig";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
@@ -16,11 +15,12 @@ import { Types } from "mongoose";
 import { IRecruiter } from "../../entities/IRecruiter.interface";
 import { IDoctor } from "../../entities/IDocotor.interface";
 import { AnimalStatus } from "../../enums/animal-status.enum";
+import { IFCMService } from "../../services/interface/IFcmService.interface";
 
 export default class AnimalReportController {
 
     constructor(private animalService:IAnimalReportService,
-      private fcmService:FCMService,
+      private fcmService:IFCMService,
       private recruiterService:IRecruiterService,
       private doctorService:IDoctorService
     ){}
@@ -118,6 +118,7 @@ export default class AnimalReportController {
         const addressParts = fullAddress.split(',').slice(0, 3).join(',');
         
         const recruitersToAlert = await this.fcmService.findRecruitersToken(recruiterIds)
+        console.log('rescuers to alert',recruitersToAlert)
         await this.fcmService.sendPushNotification(recruitersToAlert.data,"rescue alert",`rescue alert from  ${addressParts}`,'http://localhost:4200/profile')
         return res.status(201).json(createResponse(HttpStatus.OK, "reported successfully"));
       } catch (error) {
@@ -150,9 +151,9 @@ export default class AnimalReportController {
   async updateAlert(req: Request, res: Response):Promise<Response> {
     try{
 
-    const { animalReportId, recruiterId, status, location } = req.body;
+    const { animalReportId,status, recruiterId,doctorId,location } = req.body;
 
-    const animalReport = await this.animalService.updateAlert(animalReportId, recruiterId, status)
+    const animalReport = await this.animalService.updateAlert(animalReportId,status, recruiterId,doctorId)
     if (!animalReport) {
         return res.status(404).json({ success: false, message: 'Animal report not found' });
     }
@@ -163,8 +164,18 @@ export default class AnimalReportController {
       doctors = await this.doctorService.getNearbyDoctors(location.latitude,location.longitude);
       const doctorsIds: Types.ObjectId[] = doctors.map((recruiter) => new Types.ObjectId(recruiter._id as Types.ObjectId));
       await this.animalService.updateDoctors(animalReportId,doctorsIds)
+      const doctorsToAlert = await this.fcmService.findDoctorsToken(doctorsIds)
+      await this.fcmService.sendPushNotification(doctorsToAlert.data,"rescue alert",'new rescue appointment','http://localhost:4200/profile')
       return res.status(200).json({ status:200, message: 'animal picked successfully',data: animalReport ,doctors:doctors });
 
+    }
+
+    if(animalReport.status===AnimalStatus.BOOKED){
+      if (animalReport.recruiterId) {
+        const recruiterToAlert = await this.fcmService.findRecruitersToken(animalReport.recruiterId)
+        await this.fcmService.sendPushNotification(recruiterToAlert.data," booking accepted",'new rescue appointment accepted','http://localhost:4200/profile')
+
+      }
     }
 
 

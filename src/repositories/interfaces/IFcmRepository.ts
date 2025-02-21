@@ -7,5 +7,6 @@ export interface IFcmRepository{
       deleteToken(userId: string): Promise<void> 
       cleanupOldTokens(days: number): Promise<void> 
       getAdminTokens(): Promise<string[]>
-      getRecruitersTokensByIds(recruiterIds: Types.ObjectId[]): Promise<string[]>
+      getRecruitersTokensByIds(recruiterIds: Types.ObjectId[]| Types.ObjectId): Promise<string[]>
+      getDoctorsTokensByIds(doctorIds: Types.ObjectId[]| Types.ObjectId): Promise<string[]>
 }

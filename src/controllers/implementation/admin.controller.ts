@@ -3,10 +3,11 @@ import { setCookie } from '../../utilities/cookie.util';
 import { createResponse } from '../../utilities/createResponse.utils';
 import { HttpStatus } from '../../enums/http-status.enum';
 import { IAdminService } from '../../services/interface/IAdminService.interface';
+import { IAdminController } from '../interface/admin.interface';
 
 
 
-class AdminController {
+class AdminController implements IAdminController {
 
     constructor(private adminService: IAdminService) {
      
@@ -191,7 +192,7 @@ class AdminController {
         }
     }
 
-    async getUnverifiedDoctorsAndRecruiters(req: Request, res: Response) {
+    async getUnverifiedDoctorsAndRecruiters(req: Request, res: Response):Promise<Response> {
         console.log('call is getting in controller',)
         const doctors = await this.adminService.getAllUnVerifiedDoctors()
         const recruiters = await this.adminService.getAllUnVerifiedRecruiters()
@@ -200,7 +201,7 @@ class AdminController {
     }
 
 
-    async verifyDoctor(req: Request, res: Response) {
+    async verifyDoctor(req: Request, res: Response):Promise<Response> {
         try {
             const { userId } = req.body
             const is_verifed = this.adminService.verifyDoctor(userId)
@@ -210,7 +211,7 @@ class AdminController {
         }
     }
 
-    async verifyRecruiter(req: Request, res: Response) {
+    async verifyRecruiter(req: Request, res: Response):Promise<Response> {
         try {
            
             console.log(req.body, "ahiieiii this si contree")

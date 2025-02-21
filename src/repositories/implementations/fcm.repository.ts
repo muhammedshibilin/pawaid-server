@@ -32,12 +32,20 @@ class FCMRepository implements IFcmRepository{
     await fcmTokenModel.deleteMany({ lastUsedAt: { $lt: expiryDate } });
   }
 
-  async getRecruitersTokensByIds(recruiterIds:Types.ObjectId[]): Promise<string[]> {
+  async getRecruitersTokensByIds(recruiterIds: Types.ObjectId[]| Types.ObjectId): Promise<string[]> {
     const recruiters = await fcmTokenModel.find({ 
       userId: { $in: recruiterIds } 
     }) 
   
     return recruiters.map(recruiter => recruiter.token);
+  }
+
+  async getDoctorsTokensByIds(doctorsIds:Types.ObjectId[]| Types.ObjectId): Promise<string[]> {
+    const doctors = await fcmTokenModel.find({ 
+      userId: { $in: doctorsIds } 
+    }) 
+  
+    return doctors.map(recruiter => recruiter.token);
   }
   
 }

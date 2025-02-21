@@ -26,7 +26,7 @@ export class DoctorController {
       const result = await this.doctorService.register(doctorData);
       const admins = await this.fcmService.findAdminsToken()
       console.log('tokens',admins)
-      await this.fcmService.sendPushNotification(admins,"registration alert","new doctor registered",'http://localhost:4200/admin/profile')
+      await this.fcmService.sendPushNotification(admins.data,"registration alert","new doctor registered",'http://localhost:4200/admin/profile')
       return res.status(result.status).json(createResponse(result.status, result.message, result.data));
     } catch (error: any) {
       return res.status(500).json(createResponse(HttpStatus.INTERNAL_SERVER_ERROR, error.message));
@@ -64,5 +64,25 @@ export class DoctorController {
     const response = await this.doctorService.resetPassword(token, newPassword);
       res.status(response.status).json(createResponse(HttpStatus.OK,'password reset successfull'));    
       }
+
+      async getNearbyDoctors(req: Request, res: Response) {
+        try {
+          const { latitude, longitude } = req.query;
+              
+          if (!latitude || !longitude) {
+            return res.status(400).json({ message: "Latitude and Longitude are required." });
+          }
+    
+          const doctors = await this.doctorService.getNearbyDoctors(
+            parseFloat(latitude as string),
+            parseFloat(longitude as string)
+          );
+    
+          return res.json({ success: true, data: doctors });
+        } catch (error) {
+          console.error("Error fetching nearby doctors:", error);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+      }    
 
 }

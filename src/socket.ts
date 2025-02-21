@@ -8,14 +8,18 @@ let io: Server;
 export const initializeSocket = (server: http.Server) => {
   if (!io) { 
     io = new Server(server, {
-      cors: { origin: 'http://localhost:4200' }
+      cors: {
+        origin: "http://localhost:4200",
+        methods: ["GET", "POST"],
+        credentials: true, 
+      },
     });
 
     io.on('connection', (socket) => {
-      console.log('✅ Recruiter Connected:', socket.id);
+      console.log(' Recruiter Connected:', socket.id);
 
       socket.on('updateLocation', async (data) => {
-        console.log('📍 Location Update:', data);
+        console.log('Location Update:', data);
         const { recruiterId, latitude, longitude } = data;
 
         const updatedRecruiter = await recruiterRepository.updateRecruiterLocation(
@@ -25,14 +29,14 @@ export const initializeSocket = (server: http.Server) => {
         );
 
         if (updatedRecruiter) {
-          console.log('✅ Recruiter location updated:', updatedRecruiter);
+          console.log(' Recruiter location updated:', updatedRecruiter);
         } else {
-          console.log('❌ Failed to update recruiter location');
+          console.log(' Failed to update recruiter location');
         }
       });
 
       socket.on('disconnect', () => {
-        console.log('❌ Recruiter Disconnected:', socket.id);
+        console.log('Recruiter Disconnected:', socket.id);
       });
     });
   }
@@ -42,7 +46,7 @@ export const initializeSocket = (server: http.Server) => {
 
 export const getSocketInstance = (): Server => {
   if (!io) {
-    throw new Error('❌ Socket.io is not initialized!');
+    throw new Error('Socket.io is not initialized!');
   }
   return io;
 };

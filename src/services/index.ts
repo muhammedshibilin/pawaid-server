@@ -22,7 +22,9 @@ export const services = {
   ),
 
 
-  animalReportService: new AnimalReportService(repositories.animalReportRepository,repositories.recruiterRepository),
+  animalReportService: new AnimalReportService(repositories.animalReportRepository,
+    repositories.recruiterRepository,
+  repositories.doctorRepository),
 
   doctorService: new DoctorService(
     repositories.doctorRepository,
