@@ -1,8 +1,7 @@
 import { IRecruiterRepository } from "../interfaces/IRecruiterRepository";
 import { IRecruiter } from "../../entities/IRecruiter.interface";
 import Recruiter from "../../models/recruiter.model";
-import { Types } from "mongoose";
-import AnimalReport from "../../models/animal-report.model";
+
 
 
 export class RecruiterRepository implements IRecruiterRepository {

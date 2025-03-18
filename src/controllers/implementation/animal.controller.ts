@@ -16,8 +16,9 @@ import { IRecruiter } from "../../entities/IRecruiter.interface";
 import { IDoctor } from "../../entities/IDocotor.interface";
 import { AnimalStatus } from "../../enums/animal-status.enum";
 import { IFCMService } from "../../services/interface/IFcmService.interface";
+import IAnimalController from "../interface/animal.interface";
 
-export default class AnimalReportController {
+export default class AnimalReportController implements IAnimalController {
 
     constructor(private animalService:IAnimalReportService,
       private fcmService:IFCMService,
@@ -25,107 +26,75 @@ export default class AnimalReportController {
       private doctorService:IDoctorService
     ){}
 
-    streamToBuffer(stream: Readable): Promise<Buffer> {
-      return new Promise((resolve, reject) => {
-        const chunks: Uint8Array[] = [];
-        stream.on('data', (chunk) => chunks.push(chunk));
-        stream.on('end', () => resolve(Buffer.concat(chunks)));
-        stream.on('error', reject);
-      });
-    }
 
-    async getObjectFromS3(bucket: string, key: string): Promise<Buffer> {
-      const command = new GetObjectCommand({
-        Bucket: bucket,
-        Key: key,
-      });
-    
-      try {
-        const response = await s3Client.send(command);
-            if (response.Body instanceof Readable) {
-          const stream = sdkStreamMixin(response.Body);
-          return await this.streamToBuffer(stream);
-        } else {
-          throw new Error('Unsupported response body type');
-        }
-      } catch (error) {
-        console.error('Error fetching object from S3:', error);
-        throw error;
-      }
-    }
-    async extractGeoTag(fileKey: string): Promise<{ latitude: number; longitude: number } | null> {
-      try {
-        const fileBuffer = await this.getObjectFromS3(process.env.S3_BUCKET_NAME!, fileKey);
-        const parser = exifParser.create(fileBuffer);
-        const exifData = parser.parse();
-        function convertGPSCoordinates(degrees: number[], ref: string): number {
-          const [deg, min, sec] = degrees;
-          const decimal = deg + min / 60 + sec / 3600;
-          return ref === 'S' || ref === 'W' ? -decimal : decimal;
-        }
-    
-        if (exifData.tags.GPSLatitude && exifData.tags.GPSLongitude) {
-          const latitude = convertGPSCoordinates(exifData.tags.GPSLatitude, exifData.tags.GPSLatitudeRef);
-          const longitude = convertGPSCoordinates(exifData.tags.GPSLongitude, exifData.tags.GPSLongitudeRef);
-    
-          return {
-            latitude,
-            longitude,
-          };
-        }
-    
-        console.log('No geotagging found in the image.');
-        return null;
-      } catch (error) {
-        console.error('Error extracting EXIF geotag:', error);
-        return null;
-      }
-    }
 
 
     async create(req: Request, res: Response) {
       try {
         const { title, location } = req.body;
-        const imageUrl = (req.file as UploadedFile).location;
-        const fileKey = (req.file as UploadedFile).key;
+        const imageUrl = req.body.imageUrl; // Get the image URL from the request body
     
-        let extractedLocation = await this.extractGeoTag(fileKey);
-        let finalLocation = extractedLocation ? extractedLocation : JSON.parse(location);
-        console.log('final Location',finalLocation)
-    
+        // Validate required fields
         if (!title || !location || !imageUrl) {
           return res.status(400).json({ message: "Missing required fields" });
         }
-
-        const recruiters: IRecruiter[] = await this.recruiterService.getNearbyRecruiters(finalLocation.latitude,finalLocation.longitude);
-
-        const recruiterIds: Types.ObjectId[] = recruiters.map((recruiter) => new Types.ObjectId(recruiter._id as Types.ObjectId));
-
     
+        // Parse the location sent from the frontend
+        let finalLocation;
+        try {
+          finalLocation = JSON.parse(location);
+        } catch (error) {
+          console.error('Error parsing location:', error);
+          return res.status(400).json({ message: "Invalid location format" });
+        }
+    
+        // Fetch nearby recruiters based on the location
+        const recruiters: IRecruiter[] = await this.recruiterService.getNearbyRecruiters(
+          finalLocation.latitude,
+          finalLocation.longitude
+        );
+    
+        // Extract recruiter IDs
+        const recruiterIds: Types.ObjectId[] = recruiters.map(
+          (recruiter) => new Types.ObjectId(recruiter._id as Types.ObjectId)
+        );
+    
+        // Create the animal report
         const newReport = await this.animalService.createAnimalReport({
           description: title,
-          imageUrl,
-          location:finalLocation,
+          imageUrl, // Use the image URL sent from the frontend
+          location: finalLocation, // Use the location sent from the frontend
           userId: req.user.id,
-          recruiterId:recruiterIds
+          recruiterId: recruiterIds,
         });
-
+    
+        // Reverse geocode to get the address
         const response = await axios.get(
           `https://us1.locationiq.com/v1/reverse.php?key=${process.env.LOCATIONIQ_KEY}&lat=${finalLocation.latitude}&lon=${finalLocation.longitude}&format=json`
         );
-        
-        const fullAddress = response.data.display_name; 
+        const fullAddress = response.data.display_name;
         const addressParts = fullAddress.split(',').slice(0, 3).join(',');
-        
-        const recruitersToAlert = await this.fcmService.findRecruitersToken(recruiterIds)
-        console.log('rescuers to alert',recruitersToAlert)
-        await this.fcmService.sendPushNotification(recruitersToAlert.data,"rescue alert",`rescue alert from  ${addressParts}`,'http://localhost:4200/profile')
-        return res.status(201).json(createResponse(HttpStatus.OK, "reported successfully"));
+    
+        // Send push notifications to recruiters
+        const recruitersToAlert = await this.fcmService.findRecruitersToken(recruiterIds);
+        console.log('Recruiters to alert:', recruitersToAlert);
+        await this.fcmService.sendPushNotification(
+          recruitersToAlert.data,
+          "Rescue Alert",
+          `Rescue alert from ${addressParts}`,
+          'http://localhost:4200/profile'
+        );
+    
+        return res.status(201).json(createResponse(HttpStatus.OK, "Reported successfully"));
       } catch (error) {
         console.error("Error creating animal report:", error);
         return res.status(500).json({ message: "Internal server error" });
       }
     }
+
+  
+
+
   async getAll(req: Request, res: Response) {
     try {
       const reports = await this.animalService.getAnimalReports();

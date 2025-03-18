@@ -10,7 +10,6 @@ import { IAdminController } from '../interface/admin.interface';
 class AdminController implements IAdminController {
 
     constructor(private adminService: IAdminService) {
-     
     }
 
     async login(req: Request, res: Response): Promise<Response> {

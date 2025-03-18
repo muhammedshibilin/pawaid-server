@@ -41,8 +41,6 @@ const authenticateJWT = (requiredRoles: string[] = []) => {
 
         if (typeof decoded === "object" && "id" in decoded && "role" in decoded) {
           req.user = decoded as IPayload;
-         
-
           if (requiredRoles.length > 0 && !requiredRoles.includes(decoded.role)) {
           console.log('tokenr rolele',decoded.role)
             return res.status(403).json({ message: "Forbidden: Insufficient permissions" });

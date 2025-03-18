@@ -5,9 +5,10 @@ import { createResponse } from '../../utilities/createResponse.utils';
 import { HttpStatus } from '../../enums/http-status.enum';
 import { setCookie } from '../../utilities/cookie.util';
 import { FCMService } from '../../services/implementation/fcm.service';
+import IRecruiterController from '../interface/recruiter.interface';
 
   
-export class RecruiterController {
+export class RecruiterController implements IRecruiterController{
 
 
   constructor(private recruiterService: RecruiterService,private fcmService:FCMService) {

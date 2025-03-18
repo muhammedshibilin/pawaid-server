@@ -4,10 +4,11 @@ import { createResponse } from '../../utilities/createResponse.utils';
 import { HttpStatus } from '../../enums/http-status.enum';
 import { setCookie } from '../../utilities/cookie.util';
 import UserService from '../../services/implementation/user.service';
+import { IUserController } from "../interface/user.interface";
 
 
 
-class UserController {
+class UserController implements IUserController {
 
     private readonly userService: UserService;
 
@@ -265,11 +266,11 @@ class UserController {
     return res.status(response.status).json({ message: response.message });
     }
 
-    async resetPassword(req: Request, res: Response):Promise<void>{
+    async resetPassword(req: Request, res: Response):Promise<Response>{
         console.log(req.body,"jaaooo")
         const { token, newPassword } = req.body;
         const response = await this.userService.resetPassword(token, newPassword);
-          res.status(response.status).json(createResponse(HttpStatus.OK,'password reset successfull'));    
+          return res.status(response.status).json(createResponse(HttpStatus.OK,'password reset successfull'));    
           }
 
       async getProfile(req: Request, res: Response): Promise<Response> {
